@@ -6,6 +6,7 @@ import TutorIA from './TutorIA';
 import Materias from './Materias';
 import Progreso from './Progreso';
 import Logros from './Logros';
+import Diagnostico from './Diagnostico';
 
 const MATERIAS = [
   { id: 'matematica', nombre: 'Matemática', emoji: '🧮', color: 'bg-purple-100', text: 'text-purple-700', bar: 'bg-purple-600', pct: 48, unidad: 'Álgebra · Unidad 3' },
@@ -27,18 +28,19 @@ export default function App() {
   const [navActivo, setNavActivo] = useState('inicio');
 
   const registrar = async () => {
-    try {
-      const res = await createUserWithEmailAndPassword(auth, email, password);
-      await setDoc(doc(db, 'usuarios', res.user.uid), {
-        uid: res.user.uid, nombre, email,
-        anio_escolar: 1, nivel_xp: 0, racha_dias: 7,
-        materias_activas: MATERIAS.map(m => m.id),
-        fecha_registro: new Date()
-      });
-      setUsuario({ uid: res.user.uid, nombre });
-      setPantalla('dashboard');
-    } catch(e) { setError('Error: ' + e.message); }
-  };
+  try {
+    const res = await createUserWithEmailAndPassword(auth, email, password);
+    await setDoc(doc(db, 'usuarios', res.user.uid), {
+      uid: res.user.uid, nombre, email,
+      anio_escolar: 1, nivel_xp: 0, racha_dias: 0,
+      materias_activas: MATERIAS.map(m => m.id),
+      diagnostico_completo: false,
+      fecha_registro: new Date()
+    });
+    setUsuario({ uid: res.user.uid, nombre, diagnostico_completo: false });
+    setPantalla('diagnostico');
+  } catch(e) { setError('Error: ' + e.message); }
+};
 
   const login = async () => {
     try {
@@ -55,7 +57,16 @@ export default function App() {
     setPantalla('login');
     setTab('login');
   };
-
+  if (pantalla === 'diagnostico') return (
+  <Diagnostico onComplete={async (datosFinales) => {
+    await setDoc(doc(db, 'usuarios', usuario.uid), {
+      ...datosFinales,
+      diagnostico_completo: true,
+    }, { merge: true });
+    setUsuario(prev => ({ ...prev, ...datosFinales, diagnostico_completo: true }));
+    setPantalla('dashboard');
+  }} />
+);
   if (pantalla === 'dashboard') {
     return (
       <div className="flex h-screen bg-gray-50 font-sans text-sm overflow-hidden">
