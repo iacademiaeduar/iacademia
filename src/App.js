@@ -28,26 +28,31 @@ export default function App() {
   const [navActivo, setNavActivo] = useState('inicio');
 
   const registrar = async () => {
-  try {
-    const res = await createUserWithEmailAndPassword(auth, email, password);
-    await setDoc(doc(db, 'usuarios', res.user.uid), {
-      uid: res.user.uid, nombre, email,
-      anio_escolar: 1, nivel_xp: 0, racha_dias: 0,
-      materias_activas: MATERIAS.map(m => m.id),
-      diagnostico_completo: false,
-      fecha_registro: new Date()
-    });
-    setUsuario({ uid: res.user.uid, nombre, diagnostico_completo: false });
-    setPantalla('diagnostico');
-  } catch(e) { setError('Error: ' + e.message); }
-};
+    try {
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+      await setDoc(doc(db, 'usuarios', res.user.uid), {
+        uid: res.user.uid, nombre, email,
+        anio_escolar: 1, nivel_xp: 0, racha_dias: 0,
+        materias_activas: MATERIAS.map(m => m.id),
+        diagnostico_completo: false,
+        fecha_registro: new Date()
+      });
+      setUsuario({ uid: res.user.uid, nombre, diagnostico_completo: false });
+      setPantalla('diagnostico');
+    } catch(e) { setError('Error: ' + e.message); }
+  };
 
   const login = async () => {
     try {
       const res = await signInWithEmailAndPassword(auth, email, password);
       const snap = await getDoc(doc(db, 'usuarios', res.user.uid));
-      setUsuario(snap.data());
-      setPantalla('dashboard');
+      const data = snap.data();
+      setUsuario(data);
+      if (data?.diagnostico_completo) {
+        setPantalla('dashboard');
+      } else {
+        setPantalla('diagnostico');
+      }
     } catch(e) { setError('Email o contraseña incorrectos'); }
   };
 
@@ -57,16 +62,22 @@ export default function App() {
     setPantalla('login');
     setTab('login');
   };
+
   if (pantalla === 'diagnostico') return (
-  <Diagnostico onComplete={async (datosFinales) => {
-    await setDoc(doc(db, 'usuarios', usuario.uid), {
-      ...datosFinales,
-      diagnostico_completo: true,
-    }, { merge: true });
-    setUsuario(prev => ({ ...prev, ...datosFinales, diagnostico_completo: true }));
-    setPantalla('dashboard');
-  }} />
-);
+    <Diagnostico onComplete={async (datosFinales) => {
+      try {
+        await setDoc(doc(db, 'usuarios', usuario.uid), {
+          ...datosFinales,
+          diagnostico_completo: true,
+        }, { merge: true });
+        setUsuario(prev => ({ ...prev, ...datosFinales, diagnostico_completo: true }));
+      } catch(e) {
+        console.error('Error guardando diagnóstico:', e);
+      }
+      setPantalla('dashboard');
+    }} />
+  );
+
   if (pantalla === 'dashboard') {
     return (
       <div className="flex h-screen bg-gray-50 font-sans text-sm overflow-hidden">
@@ -96,11 +107,13 @@ export default function App() {
 
         <div className="flex-1 flex flex-col min-w-0">
           <div className="bg-white border-b border-gray-100 px-5 py-2.5 flex items-center justify-between">
-            <span className="font-medium text-gray-800">Buenos días, {usuario?.nombre} 👋</span>
+            <span className="font-medium text-gray-800">
+              Buenos días, {usuario?.nombre || usuario?.nombre_completo} 👋
+            </span>
             <div className="flex items-center gap-3">
               <span className="text-xs text-gray-500 bg-gray-50 px-3 py-1 rounded-full">🔥 7 días seguidos</span>
               <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 font-semibold text-xs">
-                {usuario?.nombre?.charAt(0)}
+                {(usuario?.nombre || usuario?.nombre_completo || 'U').charAt(0).toUpperCase()}
               </div>
             </div>
           </div>
@@ -182,7 +195,7 @@ export default function App() {
         {error && <p className="text-red-500 text-xs mb-3">{error}</p>}
         <button onClick={tab === 'login' ? login : registrar}
           className="w-full bg-purple-600 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
-          {tab === 'login' ? 'Entrar a iAcademia' : 'Crear cuenta gratis'}
+          {tab === 'login' ? 'Entrar a iAcademia' : 'Comenzar mi educación'}
         </button>
       </div>
     </div>
