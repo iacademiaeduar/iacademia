@@ -196,7 +196,18 @@ export default function App() {
         <button onClick={tab === 'login' ? login : registrar}
           className="w-full bg-purple-600 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
           {tab === 'login' ? 'Entrar a iAcademia' : 'Comenzar mi educación'}
-        </button>
+        </button>{process.env.NODE_ENV === 'development' && (
+  <div className="mt-3 pt-3 border-t border-gray-100 flex flex-col gap-2">
+    <button onClick={() => { setUsuario({uid:'test', nombre:'Test'}); setPantalla('diagnostico'); }}
+      className="w-full bg-gray-100 text-gray-500 py-2 rounded-lg text-xs">
+      🧪 Ir directo al diagnóstico (test)
+    </button>
+    <button onClick={() => { setUsuario({uid:'test', nombre:'Test'}); setPantalla('dashboard'); }}
+      className="w-full bg-gray-100 text-gray-500 py-2 rounded-lg text-xs">
+      🧪 Ir directo al dashboard (test)
+    </button>
+  </div>
+)}
       </div>
     </div>
   );
