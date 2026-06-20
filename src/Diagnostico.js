@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useTransition } from 'react';
+import MateriaDetalle from './MateriaDetalle';
 import { calcularPrecioBase, calcularDescuentoOptativas, calcularResumen, PRECIOS } from './PreciosConfig';
 
 // ── DATOS ────────────────────────────────────────────────────────────────────
@@ -177,6 +178,8 @@ export default function Diagnostico({onComplete}) {
   const [metodoPago, setMetodoPago] = useState(null);
   const [optativasSel, setOptativasSel] = useState([]);
   const [premiumSel, setPremiumSel] = useState([]);
+  const [materiaDetalle, setMateriaDetalle] = useState(null);
+  const [tipoDetalle, setTipoDetalle] = useState(null);
 
   const [alumno, setAlumno] = useState({
     nombre:'',fecha_nacimiento:'',localidad:'',provincia:'',
@@ -194,18 +197,19 @@ export default function Diagnostico({onComplete}) {
     comprension:false,puntaje_logica:0,
   });
 
-  const av = () => setPaso(p=>p+1);
+  const [isPending, startTransition] = React.useTransition();
+  const av = () => setTimeout(() => setPaso(p=>p+1), 10);
+  const volver = () => setTimeout(() => setPaso(p=>p-1), 10);
 
   React.useEffect(() => {
     if (process.env.NODE_ENV !== 'development') return;
     const handler = (e) => {
-      if (e.key === 'ArrowRight') setPaso(p => Math.min(p+1, PASOS.length-1));
-      if (e.key === 'ArrowLeft') setPaso(p => Math.max(p-1, 0));
+      if (e.key === 'ArrowRight') setTimeout(() => setPaso(p => Math.min(p+1, PASOS.length-1)), 50);
+      if (e.key === 'ArrowLeft') setTimeout(() => setPaso(p => Math.max(p-1, 0)), 50);
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, []);
-  const volver = () => setPaso(p=>p-1);
 
   const calcEdad = useCallback(fnac => {
     if(!fnac) return null;
@@ -262,12 +266,6 @@ export default function Diagnostico({onComplete}) {
   const resumen = calcularResumen(
     alumno.anio_escolar||1, optativasSel, premiumSel, OPTATIVAS, PREMIUM_LIST
   );
-  const BotonTest = process.env.NODE_ENV === 'development' ? (
-    <button onClick={() => setPaso(p => Math.min(p+1, PASOS.length-1))}
-      className="fixed bottom-4 right-4 bg-black text-white text-xs px-4 py-2 rounded-full shadow-lg z-50">
-      🧪 Siguiente (test) →
-    </button>
-  ) : null;
 
     if(pantalla==='inicio') return wrap(card(
     <>
@@ -331,6 +329,7 @@ export default function Diagnostico({onComplete}) {
           Todos los datos son estrictamente confidenciales y se usan exclusivamente para personalizar la experiencia educativa. iAcademia no comparte información con terceros.
         </div>
       </div>
+      
       <div className="flex gap-3">
         <Btn outline onClick={volver}>← Volver</Btn>
         <Btn onClick={av}>Entendido, continuar →</Btn>
@@ -535,12 +534,14 @@ export default function Diagnostico({onComplete}) {
         </div>
         <div className="grid grid-cols-3 gap-2">
           {materiasBase.map(m=>(
-            <div key={m} className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2">
-              <span className="text-emerald-500 text-xs">✓</span>
-              <span className="text-xs font-medium text-emerald-700">{m}</span>
-            </div>
-          ))}
-        </div>
+            <button key={m} onClick={()=>{console.log('materia:', m); setMateriaDetalle({nombre: m, id: m});setTipoDetalle('base');}} onClick={()=>{setMateriaDetalle(m);setTipoDetalle('base');}}
+  className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2 hover:border-emerald-400 transition-all text-left w-full">
+  <span className="text-emerald-500 text-xs">✓</span>
+  <span className="text-xs font-medium text-emerald-700 flex-1">{m}</span>
+  <span className="text-xs text-emerald-400">ver →</span>
+</button>
+))}
+</div>
       </div>
 
       {/* OPTATIVAS */}
@@ -586,9 +587,12 @@ export default function Diagnostico({onComplete}) {
                           sel?'border-purple-400 bg-purple-50':'border-gray-200 hover:border-purple-200'}`}>
                       <span className="text-sm">{m.emoji}</span>
                       <div className="flex-1 min-w-0">
+                        <span onClick={e=>{e.stopPropagation();setMateriaDetalle(m);setTipoDetalle('optativa');}}
+                          className="text-xs text-gray-400 hover:text-purple-500 block mb-0.5 cursor-pointer">ver info →</span>
                         <span className={`text-xs font-medium leading-tight block truncate
                           ${sel?'text-purple-700':'text-gray-600'}`}>{m.nombre}</span>
                         {bloqueada&&<span className="text-xs text-gray-400">Desde {m.yr}° año</span>}
+                        
                       </div>
                       {sel&&<span className="text-purple-500 text-xs flex-shrink-0" style={{opacity:sel?1:0,transition:'opacity 200ms'}}>✓</span>}
                     </button>
@@ -610,6 +614,8 @@ export default function Diagnostico({onComplete}) {
           {PREMIUM_LIST.map(m=>{
             const sel=premiumSel.includes(m.id);
             const precio=PRECIOS.PREMIUM[m.id]||3500;
+            <span onClick={e=>{e.stopPropagation();setMateriaDetalle(m);setTipoDetalle('premium');}}
+                  className="text-xs text-amber-400 hover:text-amber-600 ml-auto">ver →</span>
             return (
               <button key={m.id} onClick={()=>togglePrem(m.id)}
                 style={{transition:'transform 150ms'}}
@@ -642,7 +648,16 @@ export default function Diagnostico({onComplete}) {
 
       <div className="flex gap-3">
         <Btn outline onClick={volver}>← Volver</Btn>
-        <Btn onClick={av}>Ver resumen y pagar →</Btn>
+        <Btn onClick={av}>Ver resumen y pagar →</Btn>{materiaDetalle && (
+        <MateriaDetalle
+          materia={materiaDetalle}
+          tipo={tipoDetalle}
+          anioActual={alumno.anio_inscripcion||alumno.anio_escolar}
+          seleccionada={tipoDetalle==='optativa'?optativasSel.includes(materiaDetalle?.id):premiumSel.includes(materiaDetalle?.id)}
+          onAgregar={tipoDetalle==='optativa'?()=>toggleOpt(materiaDetalle.id):tipoDetalle==='premium'?()=>togglePrem(materiaDetalle.id):null}
+          onClose={()=>setMateriaDetalle(null)}
+        />
+      )} 
       </div>
     </div>
   );
