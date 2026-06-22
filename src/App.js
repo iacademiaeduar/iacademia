@@ -122,7 +122,11 @@ export default function App() {
             {navActivo === 'inicio' && (
               <div>
                 <div className="grid grid-cols-3 gap-3 mb-5">
-                  {[{n:'6',l:'Materias activas'},{n:'38%',l:'Progreso promedio'},{n:'47',l:'Ejercicios completados'}].map((s,i) => (
+                  {[
+  {n: usuario?.materias_base?.length || usuario?.materias_activas?.length || 6, l:'Materias activas'},
+  {n:'0%', l:'Progreso promedio'},
+  {n:'0', l:'Ejercicios completados'}
+].map((s,i) => (
                     <div key={i} className="bg-white rounded-xl p-3 border border-gray-100">
                       <div className="text-2xl font-semibold text-gray-800">{s.n}</div>
                       <div className="text-xs text-gray-400 mt-0.5">{s.l}</div>
@@ -131,17 +135,24 @@ export default function App() {
                 </div>
                 <div className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Mis materias</div>
                 <div className="grid grid-cols-3 gap-3 mb-5">
-                  {MATERIAS.map(m => (
-                    <div key={m.id} className="bg-white border border-gray-100 rounded-xl p-3 cursor-pointer hover:border-purple-200 transition-colors">
-                      <div className={`w-8 h-8 rounded-lg ${m.color} flex items-center justify-center mb-2`}>{m.emoji}</div>
-                      <div className="font-medium text-gray-800 text-xs mb-0.5">{m.nombre}</div>
-                      <div className="text-xs text-gray-400 mb-2">{m.unidad}</div>
-                      <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
-                        <div className={`h-full ${m.bar} rounded-full`} style={{width: m.pct+'%'}}></div>
-                      </div>
-                      <div className={`text-xs mt-1 font-medium ${m.text}`}>{m.pct}%</div>
-                    </div>
-                  ))}
+                  {(usuario?.materias_base?.length > 0
+  ? usuario.materias_base.map((nombre, i) => ({
+      id: nombre, nombre, emoji: '📚',
+      color: 'bg-purple-100', text: 'text-purple-700',
+      bar: 'bg-purple-600', pct: 0, unidad: 'Sin comenzar'
+    }))
+  : MATERIAS
+).map(m => (
+  <div key={m.id || m.nombre} className="bg-white border border-gray-100 rounded-xl p-3 cursor-pointer hover:border-purple-200 transition-colors">
+    <div className={`w-8 h-8 rounded-lg ${m.color} flex items-center justify-center mb-2`}>{m.emoji}</div>
+    <div className="font-medium text-gray-800 text-xs mb-0.5">{m.nombre}</div>
+    <div className="text-xs text-gray-400 mb-2">{m.unidad}</div>
+    <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
+      <div className={`h-full ${m.bar} rounded-full`} style={{width: m.pct+'%'}}></div>
+    </div>
+    <div className={`text-xs mt-1 font-medium ${m.text}`}>{m.pct}%</div>
+  </div>
+))}
                 </div>
                 <div className="bg-purple-600 rounded-xl p-4 text-white">
                   <div className="flex items-center justify-between mb-2">
