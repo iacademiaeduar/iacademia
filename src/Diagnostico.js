@@ -614,8 +614,6 @@ export default function Diagnostico({onComplete}) {
           {PREMIUM_LIST.map(m=>{
             const sel=premiumSel.includes(m.id);
             const precio=PRECIOS.PREMIUM[m.id]||3500;
-            <span onClick={e=>{e.stopPropagation();setMateriaDetalle(m);setTipoDetalle('premium');}}
-                  className="text-xs text-amber-400 hover:text-amber-600 ml-auto">ver →</span>
             return (
               <button key={m.id} onClick={()=>togglePrem(m.id)}
                 style={{transition:'transform 150ms'}}
@@ -628,7 +626,9 @@ export default function Diagnostico({onComplete}) {
                   <span className={`text-xs font-medium leading-tight block ${sel?'text-amber-700':'text-gray-600'}`}>{m.nombre}</span>
                   <span className="text-xs text-gray-400">${fmt(precio)}/mes</span>
                 </div>
-                {sel&&<span className="text-amber-500 text-xs font-bold flex-shrink-0" style={{opacity:sel?1:0,transition:'opacity 200ms'}}>✓</span>}
+                <span onClick={e=>{e.stopPropagation();setMateriaDetalle(m);setTipoDetalle('premium');}}
+                  className="text-xs text-amber-400 hover:text-amber-600 flex-shrink-0 cursor-pointer">ver →</span>
+                {sel&&<span className="text-amber-500 text-xs font-bold flex-shrink-0">✓</span>}
               </button>
             );
           })}
@@ -1115,15 +1115,4 @@ export default function Diagnostico({onComplete}) {
       </>
     ));
   }
-
-  return (
-    <>
-      {process.env.NODE_ENV === 'development' && (
-        <button onClick={() => setPaso(p => Math.min(p+1, PASOS.length-1))}
-          className="fixed bottom-4 right-4 bg-black text-white text-xs px-4 py-2 rounded-full shadow-lg z-50">
-          🧪 Siguiente (test) →
-        </button>
-      )}
-    </>
-  );
 }
