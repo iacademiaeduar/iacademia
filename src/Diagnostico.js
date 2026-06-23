@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useTransition } from 'react';
+import React, { useState, useCallback } from 'react';
 import MateriaDetalle from './MateriaDetalle';
 import { calcularPrecioBase, calcularDescuentoOptativas, calcularResumen, PRECIOS } from './PreciosConfig';
 
@@ -197,9 +197,8 @@ export default function Diagnostico({onComplete}) {
     comprension:false,puntaje_logica:0,
   });
 
-  const [isPending, startTransition] = React.useTransition();
   const av = () => setTimeout(() => setPaso(p=>p+1), 10);
-  const volver = () => setTimeout(() => setPaso(p=>p-1), 10);
+const volver = () => setTimeout(() => setPaso(p=>p-1), 10);
 
   React.useEffect(() => {
     if (process.env.NODE_ENV !== 'development') return;
@@ -534,7 +533,7 @@ export default function Diagnostico({onComplete}) {
         </div>
         <div className="grid grid-cols-3 gap-2">
           {materiasBase.map(m=>(
-            <button key={m} onClick={()=>{console.log('materia:', m); setMateriaDetalle({nombre: m, id: m});setTipoDetalle('base');}} onClick={()=>{setMateriaDetalle(m);setTipoDetalle('base');}}
+            <button key={m} onClick={()=>{setMateriaDetalle({nombre: m, id: m});setTipoDetalle('base');}}
   className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2 hover:border-emerald-400 transition-all text-left w-full">
   <span className="text-emerald-500 text-xs">✓</span>
   <span className="text-xs font-medium text-emerald-700 flex-1">{m}</span>

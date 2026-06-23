@@ -25,12 +25,12 @@ export const PRECIOS = {
 export const calcularPrecioBase = (anio) => {
   return Math.round(PRECIOS.BASE_MENSUAL * Math.pow(1 + PRECIOS.INCREMENTO_POR_ANIO, (anio || 1) - 1));
 };
-
 export const calcularDescuentoOptativas = (cantidad) => {
   if (cantidad >= 8) return PRECIOS.DESCUENTOS_OPTATIVAS[8];
   if (cantidad >= 6) return PRECIOS.DESCUENTOS_OPTATIVAS[6];
   if (cantidad >= 4) return PRECIOS.DESCUENTOS_OPTATIVAS[4];
   return 0;
+};
 };
 
 export const calcularResumen = (anio, optativasSel, premiumSel, OPTATIVAS, PREMIUM) => {
