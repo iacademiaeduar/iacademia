@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import MateriaDetalle from './MateriaDetalle';
-import { calcularPrecioBase, calcularDescuentoOptativas, calcularResumen, PRECIOS } from './PreciosConfig';
+import { calcularPrecioBase, calcularResumen, PRECIOS } from './PreciosConfig';
 
 // ── DATOS ────────────────────────────────────────────────────────────────────
 const PROVINCIAS = ['Buenos Aires','CABA','Catamarca','Chaco','Chubut','Córdoba','Corrientes',
