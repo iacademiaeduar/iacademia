@@ -30,8 +30,7 @@ export const calcularDescuentoOptativas = (cantidad) => {
   if (cantidad >= 6) return PRECIOS.DESCUENTOS_OPTATIVAS[6];
   if (cantidad >= 4) return PRECIOS.DESCUENTOS_OPTATIVAS[4];
   return 0;
-};
-};
+}
 
 export const calcularResumen = (anio, optativasSel, premiumSel, OPTATIVAS, PREMIUM) => {
   const precioBase = calcularPrecioBase(anio);
