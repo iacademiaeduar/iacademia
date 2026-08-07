@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from './firebase';
 import { getContenidoMateria, CONTENIDO_EDUCATIVO } from './ContenidoEducativo';
 
-export default function Materias({ usuario }) {
+const claveTema = (unidadId, temaId) => `${unidadId}-${temaId}`;
+
+export default function Materias({ usuario, onProgresoActualizado }) {
   const [materiaActiva, setMateriaActiva] = useState('matematica');
   const anio = usuario?.anio_inscripcion || usuario?.anio_escolar || 3;
   const contenidoActivo = getContenidoMateria(materiaActiva, anio);
@@ -10,15 +14,47 @@ export default function Materias({ usuario }) {
   const [ejIdx, setEjIdx] = useState(0);
   const [respuesta, setRespuesta] = useState(null);
   const [vista, setVista] = useState('contenido');
+  const [progreso, setProgreso] = useState(usuario?.progreso || {});
 
- const materia = contenidoActivo || CONTENIDO_EDUCATIVO[materiaActiva]?.años?.[anio] ?
-  getContenidoMateria(materiaActiva, anio) :
-  { ...CONTENIDO_EDUCATIVO[materiaActiva], unidades: CONTENIDO_EDUCATIVO[materiaActiva]?.años?.[1]?.unidades || [] };
+  const materiaBase = contenidoActivo || CONTENIDO_EDUCATIVO[materiaActiva]?.años?.[anio] ?
+   getContenidoMateria(materiaActiva, anio) :
+   { ...CONTENIDO_EDUCATIVO[materiaActiva], unidades: CONTENIDO_EDUCATIVO[materiaActiva]?.años?.[1]?.unidades || [] };
+
+  const progMateria = progreso[materiaActiva] || { completados: [], desbloqueados: [] };
+
+  // Deriva unidades/temas con el progreso real superpuesto, sin mutar los datos importados.
+  const unidades = materiaBase.unidades.map(u => {
+    const temas = u.temas.map(t => {
+      const key = claveTema(u.id, t.id);
+      const desbloqueado = t.activo || progMateria.desbloqueados.includes(key);
+      return { ...t, bloqueado: !desbloqueado, completo: progMateria.completados.includes(key) };
+    });
+    const unidadDesbloqueada = !u.bloqueado || temas.some(t => !t.bloqueado);
+    const completa = temas.length > 0 && temas.every(t => t.completo);
+    const pct = temas.length ? Math.round(100 * temas.filter(t => t.completo).length / temas.length) : u.pct;
+    return { ...u, temas, bloqueado: !unidadDesbloqueada, completa, pct };
+  });
+
+  const materia = { ...materiaBase, unidades };
+
   const ejercicios = contenidoActivo?.unidades
     ?.find(u => u.id === temaActivo.unidad)
     ?.temas?.find(t => t.id === temaActivo.tema)
     ?.ejercicios || [];
   const ej = ejercicios[ejIdx];
+
+  const persistirProgreso = async (nuevoProgMateria) => {
+    setProgreso(p => ({ ...p, [materiaActiva]: nuevoProgMateria }));
+    onProgresoActualizado?.(materiaActiva, nuevoProgMateria);
+    if (!usuario?.uid) return;
+    try {
+      await updateDoc(doc(db, 'usuarios', usuario.uid), {
+        [`progreso.${materiaActiva}`]: nuevoProgMateria,
+      });
+    } catch (e) {
+      console.error('Error guardando progreso:', e);
+    }
+  };
 
   const cambiarMateria = (id) => {
     setMateriaActiva(id);
@@ -36,10 +72,45 @@ export default function Materias({ usuario }) {
 
   const sigEj = () => {
     if (ejIdx + 1 >= ejercicios.length) {
+      const key = claveTema(temaActivo.unidad, temaActivo.tema);
+      if (!progMateria.completados.includes(key)) {
+        persistirProgreso({ ...progMateria, completados: [...progMateria.completados, key] });
+      }
       setVista('completado');
     } else {
       setEjIdx(ejIdx + 1);
       setRespuesta(null);
+    }
+  };
+
+  const continuarSiguienteTema = () => {
+    const u = unidades.find(u => u.id === temaActivo.unidad);
+    const temas = u?.temas || [];
+    const idxActual = temas.findIndex(t => t.id === temaActivo.tema);
+    const sigTema = temas[idxActual + 1];
+    if (sigTema) {
+      const key = claveTema(temaActivo.unidad, sigTema.id);
+      const desbloqueados = progMateria.desbloqueados.includes(key) ? progMateria.desbloqueados : [...progMateria.desbloqueados, key];
+      persistirProgreso({ ...progMateria, desbloqueados });
+      setTemaActivo({ unidad: temaActivo.unidad, tema: sigTema.id });
+      setVista('contenido'); setRespuesta(null); setEjIdx(0);
+    } else {
+      const idxU = unidades.findIndex(u => u.id === temaActivo.unidad);
+      const sigU = unidades[idxU + 1];
+      if (sigU) {
+        const primerTema = sigU.temas[0];
+        let desbloqueados = progMateria.desbloqueados;
+        if (primerTema) {
+          const key = claveTema(sigU.id, primerTema.id);
+          if (!desbloqueados.includes(key)) desbloqueados = [...desbloqueados, key];
+        }
+        persistirProgreso({ ...progMateria, desbloqueados });
+        setTemaActivo({ unidad: sigU.id, tema: primerTema?.id || 1 });
+        setUnidadAbierta(sigU.id);
+        setVista('contenido'); setRespuesta(null); setEjIdx(0);
+      } else {
+        setVista('contenido'); setRespuesta(null); setEjIdx(0);
+      }
     }
   };
 
@@ -168,7 +239,7 @@ export default function Materias({ usuario }) {
             )}
           </div>
         )}
-{vista === 'completado' && (
+        {vista === 'completado' && (
           <div className="bg-white border border-gray-100 rounded-xl p-6 flex-1 flex flex-col items-center justify-center text-center">
             <div className="text-5xl mb-3">🎉</div>
             <div className="font-bold text-gray-800 text-lg mb-1">¡Tema completado!</div>
@@ -181,30 +252,7 @@ export default function Materias({ usuario }) {
                 className="w-full py-2 border border-gray-200 rounded-lg text-xs font-medium text-gray-500 hover:bg-gray-50">
                 🔄 Repasar ejercicios
               </button>
-              <button onClick={() => {
-                const u = materia?.unidades?.find(u => u.id === temaActivo.unidad);
-                const temas = u?.temas || [];
-                const idxActual = temas.findIndex(t => t.id === temaActivo.tema);
-                const sigTema = temas[idxActual + 1];
-                if (sigTema) {
-                  sigTema.bloqueado = false;
-                  setTemaActivo({ unidad: temaActivo.unidad, tema: sigTema.id });
-                  setVista('contenido'); setRespuesta(null); setEjIdx(0);
-                } else {
-                  const unidades = materia?.unidades || [];
-                  const idxU = unidades.findIndex(u => u.id === temaActivo.unidad);
-                  const sigU = unidades[idxU + 1];
-                  if (sigU) {
-                    sigU.bloqueado = false;
-                    if (sigU.temas?.[0]) sigU.temas[0].bloqueado = false;
-                    setTemaActivo({ unidad: sigU.id, tema: sigU.temas[0]?.id || 1 });
-                    setUnidadAbierta(sigU.id);
-                    setVista('contenido'); setRespuesta(null); setEjIdx(0);
-                  } else {
-                    setVista('contenido'); setRespuesta(null); setEjIdx(0);
-                  }
-                }
-              }}
+              <button onClick={continuarSiguienteTema}
                 className={`w-full py-2 rounded-lg text-xs font-medium text-white ${materia.bar} hover:opacity-90`}>
                 Continuar al siguiente tema →
               </button>

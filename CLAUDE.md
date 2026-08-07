@@ -96,9 +96,12 @@ OFERTA ANUAL: -15% sobre el total
 - La `ANTHROPIC_API_KEY` vive como variable de entorno **en Vercel**, nunca en el
   bundle de React. El proxy server-side está en `api/tutor.js`.
 - La Firebase `apiKey` en `src/firebase.js` es pública por diseño (así funcionan
-  las apps web de Firebase) — **no es un secreto**. Lo que sí hay que revisar son
-  las reglas de Firestore (no hay `firestore.rules` versionado en el repo; si el
-  proyecto quedó en modo test, cualquiera puede leer/escribir `usuarios`).
+  las apps web de Firebase) — **no es un secreto**.
+- **Reglas de Firestore**: versionadas en `firestore.rules` (raíz del proyecto).
+  Cada usuario solo puede leer/escribir su propio doc en `usuarios/{uid}`. El
+  archivo del repo es la fuente de verdad — hay que pegarlo a mano en la consola
+  de Firebase (`iacademia-a0f08` → Firestore Database → Reglas) cada vez que
+  cambie, Firebase no lo sincroniza solo desde el repo.
 - Nota histórica: el documento de ideación original definió **Moodle + capa IA**
   como arquitectura técnica. Se terminó construyendo una app React custom en su
   lugar. Es una divergencia deliberada de Ismael respecto al plan escrito — no
@@ -122,6 +125,7 @@ src/
 └── Diagnostico_backup.js     # CÓDIGO MUERTO — nadie lo importa, candidato a borrar
 api/
 └── tutor.js                  # Vercel serverless function — proxy a Anthropic
+firestore.rules                # Reglas de Firestore — pegar a mano en la consola
 ```
 
 `Diagnostico_backup.js` (845 líneas) no está importado en ningún lado. Confirmar
@@ -129,21 +133,26 @@ con Ismael antes de borrarlo, pero no tocarlo mientras tanto.
 
 ## 8. Estado real conocido (relevar antes de asumir que algo funciona)
 
-- **Progreso no persiste**: responder ejercicios solo mueve `useState` local: no
-  hay escritura a Firestore. Al recargar se pierde todo.
+- **Progreso real por materia**: `Materias.js` guarda en
+  `usuarios/{uid}.progreso.{materiaId} = { completados: string[], desbloqueados: string[] }`
+  (claves `"unidadId-temaId"`) vía `updateDoc`. Se deriva el `bloqueado`/`completo`/`pct`
+  de cada tema/unidad sin mutar `ContenidoEducativo.js`. El estado sube a
+  `App.js` (`usuario.progreso`) con el callback `onProgresoActualizado`, así que
+  sobrevive a cambiar de pestaña dentro de la sesión — pero **no hay listener en
+  vivo**, si abrís la app en dos pestañas no se sincronizan entre sí.
 - **Dashboard con datos inventados**: "Nivel 4", XP, racha de 7 días, el
-  calendario de actividad, los % de progreso por materia en `App.js` y
-  `Progreso.js` son constantes hardcodeadas, no vienen de Firestore.
+  calendario de actividad en `App.js` y `Progreso.js` siguen siendo constantes
+  hardcodeadas — todavía no leen ni `usuario.progreso` ni Firestore.
 - **Contenido desbalanceado**: de 96 ejercicios totales, matemática año 1 tiene
   37; el resto de años/materias tiene 1-2 ejercicios por tema. Solo matemática
   año 1 está realmente poblada.
 - **Sin routing real**: navegación 100% por `useState` (`pantalla`, `navActivo`),
   sin URLs compartibles ni botón "atrás".
-- **🔴 Firestore rechaza escrituras (`permission-denied`)**: confirmado en vivo
-  (2026-08-07) al completar el diagnóstico — `setDoc` en `usuarios/{uid}` tira
-  `FirebaseError: Missing or insufficient permissions`. Bloquea CUALQUIER guardado
-  real (diagnóstico, progreso futuro). Revisar y corregir las reglas de
-  Firestore en la consola de `iacademia-a0f08` — no están versionadas en el repo.
+- **Los botones "🧪 Ir directo a..." de `App.js` NO son login real**: solo
+  setean `usuario` local sin pasar por Firebase Auth, así que `request.auth` es
+  `null` y Firestore rechaza cualquier escritura con `permission-denied` — es lo
+  esperado, no un bug de las reglas. Para probar escritura real hace falta un
+  login real (registro o `signInWithEmailAndPassword`).
 - **Vercel/CI**: `CI=true` en Vercel convierte warnings de ESLint en errores de
   build — **correr `npm run build` local antes de cada push** (ver §10).
 
@@ -188,11 +197,12 @@ git add . && git commit -m "..." && git push
       ya cargada en Vercel, activo en producción
 - [x] Persistencia de sesión (`onAuthStateChanged` en `App.js`)
 - [x] Bug de `removeChild` en dev (StrictMode + render no determinístico)
-- [ ] **🔴 Bloqueante: arreglar reglas de Firestore** — hoy ninguna escritura
-      funciona (`permission-denied`), confirmado en vivo. Sin esto nada de lo
-      de abajo tiene sentido: no hay dónde guardar el diagnóstico ni el progreso.
-- [ ] Progreso real guardado en Firestore (% por tema, XP, logros)
-- [ ] Desbloqueo de temas al completar ejercicios (sin mutar el módulo importado)
+- [x] Reglas de Firestore endurecidas (`firestore.rules`) — pendiente que Ismael
+      las pegue en la consola de Firebase (paso manual, no lo puede hacer Claude)
+- [x] Progreso real guardado en Firestore (`usuarios/{uid}.progreso`, por materia)
+- [x] Desbloqueo de temas al completar ejercicios (sin mutar el módulo importado)
+- [ ] XP y logros reales (hoy `progreso` solo trackea completados/desbloqueados,
+      no otorga XP ni logros — el dashboard sigue mostrando "Nivel 4" fijo)
 - [ ] Repaso espaciado inteligente
 - [ ] Completar contenido de `ContenidoEducativo.js` (balancear ejercicios por
       año/materia — hoy todo el peso está en matemática año 1)

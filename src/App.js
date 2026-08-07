@@ -200,7 +200,9 @@ export default function App() {
               </div>
             )}
             {navActivo === 'tutor' && <TutorIA usuario={usuario} />}
-            {navActivo === 'materias' && <Materias usuario={usuario} />}
+            {navActivo === 'materias' && <Materias usuario={usuario} onProgresoActualizado={(materiaId, prog) => {
+              setUsuario(prev => ({ ...prev, progreso: { ...prev?.progreso, [materiaId]: prog } }));
+            }} />}
             {navActivo === 'progreso' && <Progreso usuario={usuario} />}
             {navActivo === 'logros' && <Logros />}
             {navActivo === 'tutor_panel' && <PanelTutor usuario={usuario} />}
