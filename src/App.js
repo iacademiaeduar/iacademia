@@ -1,22 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { auth, db } from './firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import TutorIA from './TutorIA';
 import Materias from './Materias';
 import Progreso from './Progreso';
 import Logros from './Logros';
 import Diagnostico from './Diagnostico';
 import PanelTutor from './PanelTutor';
+import { calcularXP, calcularNivel, tituloNivel, calcularPromedioGeneral, contarEjerciciosCompletados, calcularPctMateria } from './gamificacion';
+import { CONTENIDO_EDUCATIVO } from './ContenidoEducativo';
 
-const MATERIAS = [
-  { id: 'matematica', nombre: 'Matemática', emoji: '🧮', color: 'bg-purple-100', text: 'text-purple-700', bar: 'bg-purple-600', pct: 48, unidad: 'Álgebra · Unidad 3' },
-  { id: 'lengua', nombre: 'Lengua y Literatura', emoji: '📖', color: 'bg-emerald-100', text: 'text-emerald-700', bar: 'bg-emerald-600', pct: 62, unidad: 'Narrativa · Unidad 2' },
-  { id: 'biologia', nombre: 'Biología', emoji: '🔬', color: 'bg-green-100', text: 'text-green-700', bar: 'bg-green-600', pct: 21, unidad: 'Células · Unidad 1' },
-  { id: 'historia', nombre: 'Historia', emoji: '🗺️', color: 'bg-amber-100', text: 'text-amber-700', bar: 'bg-amber-600', pct: 35, unidad: 'S. XX · Unidad 4' },
-  { id: 'geografia', nombre: 'Geografía', emoji: '🌍', color: 'bg-blue-100', text: 'text-blue-700', bar: 'bg-blue-600', pct: 15, unidad: 'América · Unidad 2' },
-  { id: 'ingles', nombre: 'Inglés', emoji: '🗣️', color: 'bg-orange-100', text: 'text-orange-700', bar: 'bg-orange-600', pct: 40, unidad: 'Grammar · Unit 5' },
-];
+const MATERIAS = Object.entries(CONTENIDO_EDUCATIVO).map(([id, m]) => ({
+  id, nombre: m.nombre, emoji: m.emoji, color: m.color, text: m.text, bar: m.bar,
+}));
+const ID_POR_NOMBRE = Object.fromEntries(Object.entries(CONTENIDO_EDUCATIVO).map(([id, m]) => [m.nombre, id]));
 
 export default function App() {
   const [usuario, setUsuario] = useState(null);
@@ -49,6 +47,19 @@ export default function App() {
     });
     return unsub;
   }, []);
+
+  const rachaActualizada = useRef(false);
+  useEffect(() => {
+    if (rachaActualizada.current || !usuario?.uid || pantalla !== 'dashboard') return;
+    rachaActualizada.current = true;
+    const hoy = new Date().toISOString().slice(0, 10);
+    if (usuario.ultima_actividad === hoy) return;
+    const ayer = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+    const nuevaRacha = usuario.ultima_actividad === ayer ? (usuario.racha_dias || 0) + 1 : 1;
+    const cambios = { racha_dias: nuevaRacha, ultima_actividad: hoy };
+    setUsuario(prev => ({ ...prev, ...cambios }));
+    updateDoc(doc(db, 'usuarios', usuario.uid), cambios).catch(e => console.error('Error actualizando racha:', e));
+  }, [usuario, pantalla]);
 
   const registrar = async () => {
     try {
@@ -108,6 +119,11 @@ export default function App() {
   );
 
   if (pantalla === 'dashboard') {
+    const anio = usuario?.anio_inscripcion || usuario?.anio_escolar || 3;
+    const xp = calcularXP(usuario?.progreso);
+    const { nivel, faltan, pct: pctNivel } = calcularNivel(xp);
+    const promedio = calcularPromedioGeneral(anio, usuario?.progreso);
+    const ejerciciosCompletados = contarEjerciciosCompletados(usuario?.progreso, anio);
     return (
       <div className="flex h-screen bg-gray-50 font-sans text-sm overflow-hidden">
         <div className="w-48 bg-white border-r border-gray-100 flex flex-col p-3 flex-shrink-0">
@@ -141,7 +157,7 @@ export default function App() {
               Buenos días, {usuario?.nombre || usuario?.nombre_completo} 👋
             </span>
             <div className="flex items-center gap-3">
-              <span className="text-xs text-gray-500 bg-gray-50 px-3 py-1 rounded-full">🔥 7 días seguidos</span>
+              <span className="text-xs text-gray-500 bg-gray-50 px-3 py-1 rounded-full">🔥 {usuario?.racha_dias || 0} día{(usuario?.racha_dias || 0) === 1 ? '' : 's'} seguidos</span>
               <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 font-semibold text-xs">
                 {(usuario?.nombre || usuario?.nombre_completo || 'U').charAt(0).toUpperCase()}
               </div>
@@ -154,8 +170,8 @@ export default function App() {
                 <div className="grid grid-cols-3 gap-3 mb-5">
                   {[
   {n: usuario?.materias_base?.length || usuario?.materias_activas?.length || 6, l:'Materias activas'},
-  {n:'0%', l:'Progreso promedio'},
-  {n:'0', l:'Ejercicios completados'}
+  {n: promedio+'%', l:'Progreso promedio'},
+  {n: ejerciciosCompletados, l:'Ejercicios completados'}
 ].map((s,i) => (
                     <div key={i} className="bg-white rounded-xl p-3 border border-gray-100">
                       <div className="text-2xl font-semibold text-gray-800">{s.n}</div>
@@ -166,12 +182,17 @@ export default function App() {
                 <div className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Mis materias</div>
                 <div className="grid grid-cols-3 gap-3 mb-5">
                   {(usuario?.materias_base?.length > 0
-  ? usuario.materias_base.map((nombre, i) => ({
-      id: nombre, nombre, emoji: '📚',
-      color: 'bg-purple-100', text: 'text-purple-700',
-      bar: 'bg-purple-600', pct: 0, unidad: 'Sin comenzar'
-    }))
-  : MATERIAS
+  ? usuario.materias_base.map((nombre) => {
+      const id = ID_POR_NOMBRE[nombre];
+      if (!id) return { id: nombre, nombre, emoji: '📚', color: 'bg-gray-100', text: 'text-gray-500', bar: 'bg-gray-400', pct: 0, unidad: 'Sin contenido aún' };
+      return {
+        id, nombre, emoji: CONTENIDO_EDUCATIVO[id].emoji, color: CONTENIDO_EDUCATIVO[id].color,
+        text: CONTENIDO_EDUCATIVO[id].text, bar: CONTENIDO_EDUCATIVO[id].bar,
+        pct: calcularPctMateria(id, anio, usuario?.progreso),
+        unidad: CONTENIDO_EDUCATIVO[id].años[anio]?.titulo || 'Sin contenido aún',
+      };
+    })
+  : MATERIAS.map(m => ({ ...m, pct: calcularPctMateria(m.id, anio, usuario?.progreso), unidad: CONTENIDO_EDUCATIVO[m.id]?.años[anio]?.titulo || '' }))
 ).map(m => (
   <div key={m.id || m.nombre} className="bg-white border border-gray-100 rounded-xl p-3 cursor-pointer hover:border-purple-200 transition-colors">
     <div className={`w-8 h-8 rounded-lg ${m.color} flex items-center justify-center mb-2`}>{m.emoji}</div>
@@ -187,15 +208,15 @@ export default function App() {
                 <div className="bg-purple-600 rounded-xl p-4 text-white">
                   <div className="flex items-center justify-between mb-2">
                     <div>
-                      <div className="font-semibold">Nivel 4 — Estudiante Avanzado</div>
-                      <div className="text-purple-200 text-xs mt-0.5">1.240 XP · faltan 260 XP para Nivel 5</div>
+                      <div className="font-semibold">Nivel {nivel} — {tituloNivel(nivel)}</div>
+                      <div className="text-purple-200 text-xs mt-0.5">{xp} XP · faltan {faltan} XP para Nivel {nivel + 1}</div>
                     </div>
                     <div className="text-3xl">⭐</div>
                   </div>
                   <div className="h-2 bg-purple-500 rounded-full overflow-hidden">
-                    <div className="h-full bg-white rounded-full" style={{width:'82%'}}></div>
+                    <div className="h-full bg-white rounded-full" style={{width: pctNivel+'%'}}></div>
                   </div>
-                  <div className="text-xs text-purple-200 mt-1 text-right">82%</div>
+                  <div className="text-xs text-purple-200 mt-1 text-right">{pctNivel}%</div>
                 </div>
               </div>
             )}
@@ -204,7 +225,7 @@ export default function App() {
               setUsuario(prev => ({ ...prev, progreso: { ...prev?.progreso, [materiaId]: prog } }));
             }} />}
             {navActivo === 'progreso' && <Progreso usuario={usuario} />}
-            {navActivo === 'logros' && <Logros />}
+            {navActivo === 'logros' && <Logros usuario={usuario} />}
             {navActivo === 'tutor_panel' && <PanelTutor usuario={usuario} />}
           </div>
         </div>

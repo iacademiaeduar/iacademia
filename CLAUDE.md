@@ -118,8 +118,9 @@ src/
 ├── Materias.js               # Vista de estudio: contenido + ejercicios
 ├── ContenidoEducativo.js     # Currículum: 6 materias × 6 años, 96 ejercicios
 ├── TutorIA.js                # Chat con tutor IA por materia
-├── Progreso.js               # Estadísticas — HOY con datos hardcodeados
-├── Logros.js                 # Sistema de logros — HOY con datos hardcodeados
+├── Progreso.js               # Estadísticas reales (XP, nivel, racha, logros)
+├── Logros.js                 # Logros reales, derivados de gamificacion.js
+├── gamificacion.js           # XP/nivel/logros — toda la lógica de cálculo, sin UI
 ├── PanelTutor.js             # Panel del responsable/tutor familiar
 ├── firebase.js                # Config Firebase (apiKey pública, no es secreto)
 └── Diagnostico_backup.js     # CÓDIGO MUERTO — nadie lo importa, candidato a borrar
@@ -140,9 +141,16 @@ con Ismael antes de borrarlo, pero no tocarlo mientras tanto.
   `App.js` (`usuario.progreso`) con el callback `onProgresoActualizado`, así que
   sobrevive a cambiar de pestaña dentro de la sesión — pero **no hay listener en
   vivo**, si abrís la app en dos pestañas no se sincronizan entre sí.
-- **Dashboard con datos inventados**: "Nivel 4", XP, racha de 7 días, el
-  calendario de actividad en `App.js` y `Progreso.js` siguen siendo constantes
-  hardcodeadas — todavía no leen ni `usuario.progreso` ni Firestore.
+- **XP, nivel, logros y racha reales** (`gamificacion.js`): XP = 50 por tema
+  completado (`XP_POR_TEMA`), nivel = cada 500 XP (`XP_POR_NIVEL`). 7 logros
+  definidos como funciones de `usuario.progreso`/`usuario.racha_dias` — ninguno
+  hardcodeado como obtenido. La racha (`usuario.racha_dias` +
+  `usuario.ultima_actividad`, fecha `YYYY-MM-DD`) se actualiza una vez por
+  sesión en `App.js` al entrar al dashboard: +1 si la última actividad fue
+  ayer, reinicia a 1 si no. El calendario "actividad de 5 semanas" que había en
+  `Progreso.js` se sacó porque no hay datos reales de actividad día a día para
+  llenarlo (solo un contador de racha) — se reemplazó por una tarjeta simple
+  con la racha real.
 - **Contenido balanceado en año 1** (149 ejercicios totales, antes 96): las 6
   materias tienen mínimo 4 ejercicios por tema en año 1 (matemática arranca con
   7 en su primer tema). **Años 2-6 siguen desbalanceados** (1-2 ejercicios por
@@ -211,9 +219,11 @@ git add . && git commit -m "..." && git push
       las pegue en la consola de Firebase (paso manual, no lo puede hacer Claude)
 - [x] Progreso real guardado en Firestore (`usuarios/{uid}.progreso`, por materia)
 - [x] Desbloqueo de temas al completar ejercicios (sin mutar el módulo importado)
-- [ ] XP y logros reales (hoy `progreso` solo trackea completados/desbloqueados,
-      no otorga XP ni logros — el dashboard sigue mostrando "Nivel 4" fijo)
+- [x] XP y logros reales (`gamificacion.js` — ver §8)
 - [ ] Repaso espaciado inteligente
+- [ ] Tracking de actividad día a día (hoy solo hay un contador de racha
+      agregado, no hay calendario real — se sacó el que estaba porque era
+      inventado, ver §8)
 - [x] Balancear ejercicios de año 1 (6 materias, mínimo 4 por tema — 149 totales)
 - [ ] Balancear ejercicios de años 2-6 (siguen en 1-2 por tema, sin tocar)
 
