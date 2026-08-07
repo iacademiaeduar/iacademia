@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { auth, db } from './firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import TutorIA from './TutorIA';
 import Materias from './Materias';
@@ -27,6 +27,28 @@ export default function App() {
   const [nombre, setNombre] = useState('');
   const [error, setError] = useState('');
   const [navActivo, setNavActivo] = useState('inicio');
+  const [cargandoSesion, setCargandoSesion] = useState(true);
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (fbUser) => {
+      if (fbUser) {
+        const snap = await getDoc(doc(db, 'usuarios', fbUser.uid));
+        const data = snap.data();
+        if (data) {
+          setUsuario(data);
+          setPantalla(data.diagnostico_completo ? 'dashboard' : 'diagnostico');
+        } else {
+          setUsuario({ uid: fbUser.uid });
+          setPantalla('diagnostico');
+        }
+      } else {
+        setUsuario(null);
+        setPantalla('login');
+      }
+      setCargandoSesion(false);
+    });
+    return unsub;
+  }, []);
 
   const registrar = async () => {
     try {
@@ -63,6 +85,12 @@ export default function App() {
     setPantalla('login');
     setTab('login');
   };
+
+  if (cargandoSesion) return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="text-3xl animate-pulse">🎓</div>
+    </div>
+  );
 
   if (pantalla === 'diagnostico') return (
     <Diagnostico onComplete={async (datosFinales) => {
