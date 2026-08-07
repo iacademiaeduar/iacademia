@@ -4,7 +4,7 @@ Plataforma educativa online con tutores IA, mercado inicial Argentina/hispanohab
 Reemplaza o complementa la escuela tradicional (primaria y secundaria) con currículum
 adaptativo y un tutor de IA por materia disponible 24/7.
 
-**Última actualización:** 2026-08-06 · **Estado:** ~60% del alcance actual implementado
+**Última actualización:** 2026-08-07 · **Estado:** ~60% del alcance actual implementado
 
 ---
 
@@ -131,8 +131,6 @@ con Ismael antes de borrarlo, pero no tocarlo mientras tanto.
 
 - **Progreso no persiste**: responder ejercicios solo mueve `useState` local: no
   hay escritura a Firestore. Al recargar se pierde todo.
-- **La sesión no persiste**: no hay `onAuthStateChanged`; cerrar la pestaña
-  vuelve siempre al login aunque Firebase mantenga la sesión activa.
 - **Dashboard con datos inventados**: "Nivel 4", XP, racha de 7 días, el
   calendario de actividad, los % de progreso por materia en `App.js` y
   `Progreso.js` son constantes hardcodeadas, no vienen de Firestore.
@@ -141,7 +139,11 @@ con Ismael antes de borrarlo, pero no tocarlo mientras tanto.
   año 1 está realmente poblada.
 - **Sin routing real**: navegación 100% por `useState` (`pantalla`, `navActivo`),
   sin URLs compartibles ni botón "atrás".
-- **Firestore rules**: no versionadas en el repo, revisar en la consola.
+- **🔴 Firestore rechaza escrituras (`permission-denied`)**: confirmado en vivo
+  (2026-08-07) al completar el diagnóstico — `setDoc` en `usuarios/{uid}` tira
+  `FirebaseError: Missing or insufficient permissions`. Bloquea CUALQUIER guardado
+  real (diagnóstico, progreso futuro). Revisar y corregir las reglas de
+  Firestore en la consola de `iacademia-a0f08` — no están versionadas en el repo.
 - **Vercel/CI**: `CI=true` en Vercel convierte warnings de ESLint en errores de
   build — **correr `npm run build` local antes de cada push** (ver §10).
 
@@ -171,20 +173,26 @@ git add . && git commit -m "..." && git push
 
 ## 11. Errores conocidos
 
-1. **`removeChild` en dev**: bug de navegación de React, no bloquea funcionalidad,
-   no aparece en producción.
+1. ~~`removeChild` en dev~~ — **resuelto 2026-08-07**: se sacó `React.StrictMode`
+   de `index.js` (duplicaba renders en dev, gatillaba el error en árboles
+   grandes) y se corrigió un render no determinístico en `Diagnostico.js`
+   (`Math.random()` corriendo en cada render en vez de una vez al montar).
 2. **Vercel build**: falla si hay warnings de ESLint sin resolver (`CI=true`).
 
 ## 12. Pendientes priorizados
 
 ### Fase 1 — Core educativo (en progreso)
-- [x] Botones anidados en `Materias.js` (fix aplicado — ver historial de commits)
-- [x] Warnings de ESLint que rompían el build de Vercel (fix aplicado)
+- [x] Botones anidados en `Materias.js`
+- [x] Warnings de ESLint que rompían el build de Vercel
+- [x] Tutor IA conectado vía proxy server-side (`api/tutor.js`) — `ANTHROPIC_API_KEY`
+      ya cargada en Vercel, activo en producción
+- [x] Persistencia de sesión (`onAuthStateChanged` en `App.js`)
+- [x] Bug de `removeChild` en dev (StrictMode + render no determinístico)
+- [ ] **🔴 Bloqueante: arreglar reglas de Firestore** — hoy ninguna escritura
+      funciona (`permission-denied`), confirmado en vivo. Sin esto nada de lo
+      de abajo tiene sentido: no hay dónde guardar el diagnóstico ni el progreso.
 - [ ] Progreso real guardado en Firestore (% por tema, XP, logros)
-- [ ] Persistencia de sesión (`onAuthStateChanged`)
 - [ ] Desbloqueo de temas al completar ejercicios (sin mutar el módulo importado)
-- [x] Tutor IA conectado vía proxy server-side (`api/tutor.js`) — pendiente cargar
-      `ANTHROPIC_API_KEY` en Vercel
 - [ ] Repaso espaciado inteligente
 - [ ] Completar contenido de `ContenidoEducativo.js` (balancear ejercicios por
       año/materia — hoy todo el peso está en matemática año 1)
