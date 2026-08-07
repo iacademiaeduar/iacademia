@@ -45,22 +45,17 @@ export default function TutorIA({ usuario }) {
         content: m.texto
       }));
 
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('/api/tutor', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          system: `Sos ${PROFES[materiaActiva].nombre}, el tutor de ${materiaActiva} de iAcademia, plataforma educativa para secundaria argentina (13-18 años). Respondé siempre en español, de forma clara, amigable y con ejemplos concretos adaptados a estudiantes argentinos. Usá un tono cercano, como un profe que realmente quiere que el alumno entienda. Respondé de forma concisa pero completa.`,
-          messages: historial
-        })
+        body: JSON.stringify({ materia: materiaActiva, historial })
       });
 
       const data = await res.json();
-      const respuesta = data.content?.[0]?.text || 'No pude responder, intentá de nuevo.';
-      setMensajes([...nuevosMensajes, { rol: 'tutor', texto: respuesta }]);
+      if (!res.ok) throw new Error(data?.error || 'Error del tutor');
+      setMensajes([...nuevosMensajes, { rol: 'tutor', texto: data.texto }]);
     } catch (e) {
-      setMensajes([...nuevosMensajes, { rol: 'tutor', texto: 'Para activar el tutor real necesitás conectar la API de Anthropic.' }]);
+      setMensajes([...nuevosMensajes, { rol: 'tutor', texto: 'No pude responder ahora mismo. Intentá de nuevo en un momento.' }]);
     }
     setCargando(false);
   };

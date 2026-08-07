@@ -7,6 +7,7 @@ import Materias from './Materias';
 import Progreso from './Progreso';
 import Logros from './Logros';
 import Diagnostico from './Diagnostico';
+import PanelTutor from './PanelTutor';
 
 const MATERIAS = [
   { id: 'matematica', nombre: 'Matemática', emoji: '🧮', color: 'bg-purple-100', text: 'text-purple-700', bar: 'bg-purple-600', pct: 48, unidad: 'Álgebra · Unidad 3' },
@@ -92,6 +93,7 @@ export default function App() {
             {id:'materias', icon:'📚', label:'Mis materias'},
             {id:'progreso', icon:'📈', label:'Mi progreso'},
             {id:'logros', icon:'🏆', label:'Logros'},
+            {id:'tutor_panel', icon:'👨‍👩‍👧', label:'Panel tutor'},
           ].map(n => (
             <button key={n.id} onClick={() => setNavActivo(n.id)}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg mb-0.5 text-left transition-colors ${navActivo === n.id ? 'bg-purple-50 text-purple-700 font-medium' : 'text-gray-500 hover:bg-gray-50'}`}>
@@ -170,9 +172,10 @@ export default function App() {
               </div>
             )}
             {navActivo === 'tutor' && <TutorIA usuario={usuario} />}
-            {navActivo === 'materias' && <Materias />}
+            {navActivo === 'materias' && <Materias usuario={usuario} />}
             {navActivo === 'progreso' && <Progreso usuario={usuario} />}
             {navActivo === 'logros' && <Logros />}
+            {navActivo === 'tutor_panel' && <PanelTutor usuario={usuario} />}
           </div>
         </div>
       </div>
