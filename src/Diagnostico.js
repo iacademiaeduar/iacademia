@@ -167,7 +167,7 @@ const card = (children,wide) => (
 export default function Diagnostico({onComplete}) {
   const [paso, setPaso] = useState(0);
   const [quienCompleta, setQuienCompleta] = useState(null);
-  const [logicaPregs] = useState(shuffle(LOGICA_POOL).slice(0,4));
+  const [logicaPregs] = useState(() => shuffle(LOGICA_POOL).slice(0,4));
   const [logicaIdx, setLogicaIdx] = useState(0);
   const [logicaAciertos, setLogicaAciertos] = useState(0);
   const [logicaResp, setLogicaResp] = useState(null);
