@@ -94,12 +94,12 @@ export default function App() {
 
   if (pantalla === 'diagnostico') return (
     <Diagnostico onComplete={async (datosFinales) => {
+      setUsuario(prev => ({ ...prev, ...datosFinales, diagnostico_completo: true }));
       try {
         await setDoc(doc(db, 'usuarios', usuario.uid), {
           ...datosFinales,
           diagnostico_completo: true,
         }, { merge: true });
-        setUsuario(prev => ({ ...prev, ...datosFinales, diagnostico_completo: true }));
       } catch(e) {
         console.error('Error guardando diagnóstico:', e);
       }

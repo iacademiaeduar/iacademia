@@ -143,9 +143,11 @@ con Ismael antes de borrarlo, pero no tocarlo mientras tanto.
 - **Dashboard con datos inventados**: "Nivel 4", XP, racha de 7 días, el
   calendario de actividad en `App.js` y `Progreso.js` siguen siendo constantes
   hardcodeadas — todavía no leen ni `usuario.progreso` ni Firestore.
-- **Contenido desbalanceado**: de 96 ejercicios totales, matemática año 1 tiene
-  37; el resto de años/materias tiene 1-2 ejercicios por tema. Solo matemática
-  año 1 está realmente poblada.
+- **Contenido balanceado en año 1** (149 ejercicios totales, antes 96): las 6
+  materias tienen mínimo 4 ejercicios por tema en año 1 (matemática arranca con
+  7 en su primer tema). **Años 2-6 siguen desbalanceados** (1-2 ejercicios por
+  tema) — año 1 es el que usan los alumnos nuevos por defecto (`registrar()`
+  setea `anio_escolar:1`), así que era la prioridad.
 - **Sin routing real**: navegación 100% por `useState` (`pantalla`, `navActivo`),
   sin URLs compartibles ni botón "atrás".
 - **Los botones "🧪 Ir directo a..." de `App.js` NO son login real**: solo
@@ -187,6 +189,14 @@ git add . && git commit -m "..." && git push
    grandes) y se corrigió un render no determinístico en `Diagnostico.js`
    (`Math.random()` corriendo en cada render en vez de una vez al montar).
 2. **Vercel build**: falla si hay warnings de ESLint sin resolver (`CI=true`).
+3. ~~`onComplete` de `Diagnostico` no actualizaba `usuario` si Firestore fallaba~~
+   — **resuelto 2026-08-07**: en `App.js`, `setUsuario(...)` estaba adentro del
+   `try` después del `await setDoc(...)`. Si el `setDoc` fallaba (permission-denied,
+   red, etc.), el `catch` absorbía el error y `setUsuario` nunca corría — el
+   alumno terminaba el diagnóstico pero el dashboard quedaba con el `usuario`
+   viejo (sin año, sin materias). Se movió `setUsuario` afuera del `try`, antes
+   del `setDoc`, para que la UI siempre refleje lo que el alumno completó,
+   independientemente de si el guardado remoto funciona.
 
 ## 12. Pendientes priorizados
 
@@ -204,8 +214,8 @@ git add . && git commit -m "..." && git push
 - [ ] XP y logros reales (hoy `progreso` solo trackea completados/desbloqueados,
       no otorga XP ni logros — el dashboard sigue mostrando "Nivel 4" fijo)
 - [ ] Repaso espaciado inteligente
-- [ ] Completar contenido de `ContenidoEducativo.js` (balancear ejercicios por
-      año/materia — hoy todo el peso está en matemática año 1)
+- [x] Balancear ejercicios de año 1 (6 materias, mínimo 4 por tema — 149 totales)
+- [ ] Balancear ejercicios de años 2-6 (siguen en 1-2 por tema, sin tocar)
 
 ### Fase 2 — Personalización
 - [ ] Modalidades: Completo / Apoyo Escolar / Por Horas (agregar en inscripción)

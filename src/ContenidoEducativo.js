@@ -33,6 +33,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'456 + 378 = ?', opciones:['724','834','824','734'], correcta:1, exp:'6+8=14(4,1), 5+7+1=13(3,1), 4+3+1=8. Resultado: 834.'},
                   {pregunta:'502 − 347 = ?', opciones:['155','165','255','145'], correcta:0, exp:'502 − 347 = 155.'},
+                  {pregunta:'289 + 156 = ?', opciones:['435','445','455','345'], correcta:1, exp:'9+6=15(5,1), 8+5+1=14(4,1), 2+1+1=4. Resultado: 445.'},
+                  {pregunta:'803 − 456 = ?', opciones:['347','357','337','447'], correcta:0, exp:'803 − 456 = 347 (pedimos prestado en decenas y centenas).'},
                 ]
               },
               { id:3, titulo:'Multiplicación y división', bloqueado:true,
@@ -41,6 +43,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'7 × 8 = ?', opciones:['54','56','63','48'], correcta:1, exp:'7 × 8 = 56.'},
                   {pregunta:'25 ÷ 4: ¿cuál es el resto?', opciones:['0','1','2','3'], correcta:1, exp:'4×6=24, resto=25−24=1.'},
+                  {pregunta:'9 × 6 = ?', opciones:['45','54','56','63'], correcta:1, exp:'9 × 6 = 54.'},
+                  {pregunta:'36 ÷ 5: ¿cuál es el cociente?', opciones:['6','7','8','9'], correcta:1, exp:'5×7=35, 36−35=1 de resto. Cociente=7.'},
                 ]
               },
               { id:4, titulo:'Fracciones y decimales', bloqueado:true,
@@ -49,6 +53,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'¿Qué fracción representa la mitad?', opciones:['1/4','1/3','1/2','2/3'], correcta:2, exp:'La mitad es 1/2.'},
                   {pregunta:'¿Cuánto es 0,5 + 0,3?', opciones:['0,8','0,53','8','0,08'], correcta:0, exp:'0,5 + 0,3 = 0,8.'},
+                  {pregunta:'¿Qué fracción representa un cuarto?', opciones:['1/2','1/3','1/4','1/5'], correcta:2, exp:'Un cuarto es 1/4.'},
+                  {pregunta:'¿Cuánto es 3/4 en decimal?', opciones:['0,25','0,5','0,75','0,34'], correcta:2, exp:'3/4 = 3÷4 = 0,75.'},
                 ]
               },
             ]
@@ -61,6 +67,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'¿Cuántos lados tiene un hexágono?', opciones:['5','6','7','8'], correcta:1, exp:'Hexa = 6 en griego.'},
                   {pregunta:'Un triángulo tiene ángulos de 60° y 80°. ¿El tercero?', opciones:['30°','40°','50°','60°'], correcta:1, exp:'180°−60°−80°=40°.'},
+                  {pregunta:'¿Cuántos lados tiene un pentágono?', opciones:['4','5','6','7'], correcta:1, exp:'Penta = 5 en griego.'},
+                  {pregunta:'Un cuadrado tiene lados de 5 cm. ¿Cuánto mide cada ángulo interno?', opciones:['45°','60°','90°','180°'], correcta:2, exp:'Todos los ángulos internos de un cuadrado son de 90°.'},
                 ]
               },
               { id:2, titulo:'Perímetro y área', bloqueado:true,
@@ -68,6 +76,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'Rectángulo: P=2(b+h), A=b×h\nCuadrado: P=4l, A=l²\nTriángulo: A=(b×h)/2',
                 ejercicios:[
                   {pregunta:'Rectángulo: base 8 cm, altura 3 cm. ¿Área?', opciones:['11 cm²','22 cm²','24 cm²','16 cm²'], correcta:2, exp:'A=8×3=24 cm².'},
+                  {pregunta:'Rectángulo: base 6 cm, altura 4 cm. ¿Perímetro?', opciones:['20 cm','24 cm','10 cm','18 cm'], correcta:0, exp:'P=2×(6+4)=2×10=20 cm.'},
+                  {pregunta:'Cuadrado de lado 7 cm. ¿Área?', opciones:['14 cm²','28 cm²','49 cm²','21 cm²'], correcta:2, exp:'A=l²=7²=49 cm².'},
+                  {pregunta:'Triángulo: base 10 cm, altura 4 cm. ¿Área?', opciones:['40 cm²','20 cm²','14 cm²','24 cm²'], correcta:1, exp:'A=(b×h)/2=(10×4)/2=20 cm².'},
                 ]
               },
             ]
@@ -80,6 +91,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'x + 8 = 15. ¿Cuánto vale x?', opciones:['5','6','7','8'], correcta:2, exp:'x=15−8=7.'},
                   {pregunta:'2x = 14. ¿Cuánto vale x?', opciones:['5','6','7','8'], correcta:2, exp:'x=14÷2=7.'},
+                  {pregunta:'x − 6 = 9. ¿Cuánto vale x?', opciones:['13','14','15','16'], correcta:2, exp:'x=9+6=15.'},
+                  {pregunta:'3x = 21. ¿Cuánto vale x?', opciones:['6','7','8','9'], correcta:1, exp:'x=21÷3=7.'},
                 ]
               },
             ]
@@ -247,6 +260,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'¿Qué tipo de texto es un cuento?', opciones:['Descriptivo','Narrativo','Argumentativo','Informativo'], correcta:1, exp:'El cuento narra hechos con personajes y trama.'},
                   {pregunta:'¿Cuál es la parte donde surge el problema?', opciones:['Inicio','Nudo','Desenlace','Epílogo'], correcta:1, exp:'El nudo es donde aparece el conflicto.'},
+                  {pregunta:'¿Quién cuenta los hechos en un texto narrativo?', opciones:['El autor siempre','El narrador','El lector','El protagonista siempre'], correcta:1, exp:'El narrador es la voz que cuenta la historia; puede o no coincidir con el autor.'},
+                  {pregunta:'¿Cómo se llama el momento final de la historia?', opciones:['Nudo','Inicio','Desenlace','Presentación'], correcta:2, exp:'El desenlace es la resolución del conflicto al final del relato.'},
                 ]
               },
               { id:2, titulo:'Textos descriptivos e informativos', bloqueado:true,
@@ -254,6 +269,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'Descriptivo: cómo ES algo (adjetivos)\nInformativo: qué SUCEDE (datos, fechas)',
                 ejercicios:[
                   {pregunta:'¿Qué tipo de texto es una noticia?', opciones:['Narrativo','Descriptivo','Informativo','Argumentativo'], correcta:2, exp:'La noticia informa hechos reales con objetividad.'},
+                  {pregunta:'¿Qué palabra es típica de un texto descriptivo?', opciones:['Luego','Adjetivo','Entonces','Finalmente'], correcta:1, exp:'Los adjetivos son la herramienta principal para describir características.'},
+                  {pregunta:'Una enciclopedia es un texto:', opciones:['Narrativo','Argumentativo','Informativo','Poético'], correcta:2, exp:'Las enciclopedias informan datos de forma objetiva.'},
+                  {pregunta:'¿Qué busca un texto descriptivo?', opciones:['Convencer al lector','Presentar características de algo','Narrar una aventura','Dar una opinión'], correcta:1, exp:'Describe cómo es una persona, lugar u objeto.'},
                 ]
               },
               { id:3, titulo:'Textos argumentativos', bloqueado:true,
@@ -261,6 +279,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'1. Tesis: postura\n2. Argumentos: razones\n3. Conclusión: refuerzo',
                 ejercicios:[
                   {pregunta:'¿Cuál es el propósito de un texto argumentativo?', opciones:['Entretener','Informar','Convencer','Describir'], correcta:2, exp:'Busca convencer al lector de una postura.'},
+                  {pregunta:'¿Qué elemento presenta la postura del autor?', opciones:['La tesis','El desenlace','El narrador','La descripción'], correcta:0, exp:'La tesis es la idea u opinión central que el texto defiende.'},
+                  {pregunta:'¿Qué son los argumentos en un texto argumentativo?', opciones:['Los personajes','Las razones que sostienen la tesis','El final del texto','Los adjetivos usados'], correcta:1, exp:'Los argumentos son las razones que respaldan la postura del autor.'},
+                  {pregunta:'Un artículo de opinión es un ejemplo de texto:', opciones:['Narrativo','Descriptivo','Argumentativo','Informativo'], correcta:2, exp:'Un artículo de opinión defiende una postura con argumentos: es argumentativo.'},
                 ]
               },
             ]
@@ -273,6 +294,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'¿Cuál es el sustantivo en "el árbol verde"?', opciones:['el','árbol','verde','ninguno'], correcta:1, exp:'Árbol nombra una cosa.'},
                   {pregunta:'¿Cuál es el adjetivo en "la noche oscura"?', opciones:['la','noche','oscura','ninguno'], correcta:2, exp:'Oscura califica al sustantivo noche.'},
+                  {pregunta:'¿Cuál es el sustantivo en "la mesa redonda"?', opciones:['la','mesa','redonda','ninguno'], correcta:1, exp:'Mesa nombra un objeto: es el sustantivo.'},
+                  {pregunta:'¿Cuál de estas palabras es un adjetivo?', opciones:['Correr','Hermoso','Rápidamente','Casa'], correcta:1, exp:'Hermoso califica a un sustantivo: es un adjetivo.'},
                 ]
               },
               { id:2, titulo:'Verbos y tiempos verbales', bloqueado:true,
@@ -280,6 +303,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'CORRER:\nPasado: corrí/corría\nPresente: corro\nFuturo: correré',
                 ejercicios:[
                   {pregunta:'"Mañana estudiaré" está en tiempo:', opciones:['Pasado','Presente','Futuro','No tiene'], correcta:2, exp:'"Estudiaré" indica acción futura.'},
+                  {pregunta:'"Ayer comí pizza" está en tiempo:', opciones:['Presente','Pasado','Futuro','No tiene tiempo'], correcta:1, exp:'"Comí" indica una acción ya realizada: es pasado.'},
+                  {pregunta:'"Hoy juego al fútbol" está en tiempo:', opciones:['Pasado','Presente','Futuro','Condicional'], correcta:1, exp:'"Juego" indica una acción que ocurre ahora: presente.'},
+                  {pregunta:'¿Qué palabra es un verbo?', opciones:['Azul','Casa','Saltar','Rápido'], correcta:2, exp:'Saltar expresa una acción: es un verbo.'},
                 ]
               },
             ]
@@ -392,6 +418,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'¿Qué célula NO tiene núcleo definido?', opciones:['Eucariota animal','Eucariota vegetal','Procariota','Todas tienen'], correcta:2, exp:'Las procariotas no tienen núcleo definido.'},
                   {pregunta:'¿Cuál es organismo procariota?', opciones:['Hongo','Planta','Bacteria','Animal'], correcta:2, exp:'Las bacterias son los únicos organismos procariotas.'},
+                  {pregunta:'¿Qué tamaño tiene aproximadamente una célula eucariota?', opciones:['1-10 μm','10-100 μm','1 mm','1 cm'], correcta:1, exp:'Las eucariotas miden entre 10 y 100 micrómetros, más grandes que las procariotas.'},
+                  {pregunta:'¿Qué tienen las células eucariotas que las procariotas no?', opciones:['ADN','Membrana celular','Núcleo definido','Citoplasma'], correcta:2, exp:'Las eucariotas tienen núcleo rodeado de membrana; las procariotas no.'},
                 ]
               },
               { id:2, titulo:'Orgánulos y funciones', bloqueado:true,
@@ -400,6 +428,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'¿Qué orgánulo produce energía?', opciones:['Núcleo','Ribosoma','Mitocondria','Vacuola'], correcta:2, exp:'La mitocondria produce ATP por respiración celular.'},
                   {pregunta:'¿Qué orgánulo es exclusivo de plantas?', opciones:['Mitocondria','Ribosoma','Núcleo','Cloroplasto'], correcta:3, exp:'El cloroplasto realiza la fotosíntesis.'},
+                  {pregunta:'¿Qué orgánulo fabrica proteínas?', opciones:['Mitocondria','Ribosoma','Núcleo','Cloroplasto'], correcta:1, exp:'Los ribosomas son responsables de la síntesis de proteínas.'},
+                  {pregunta:'¿Qué orgánulo controla las actividades de la célula?', opciones:['Núcleo','Ribosoma','Mitocondria','Vacuola'], correcta:0, exp:'El núcleo contiene el ADN y dirige la actividad celular.'},
                 ]
               },
               { id:3, titulo:'Mitosis y meiosis', bloqueado:true,
@@ -408,6 +438,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'¿Qué división produce células para el crecimiento?', opciones:['Meiosis','Mitosis','Fisión binaria','Gemación'], correcta:1, exp:'La mitosis produce células idénticas.'},
                   {pregunta:'¿Cuántas células produce la meiosis?', opciones:['1','2','4','8'], correcta:2, exp:'La meiosis produce 4 células haploides.'},
+                  {pregunta:'¿Qué proceso genera los gametos (óvulo y espermatozoide)?', opciones:['Mitosis','Meiosis','Fisión binaria','Gemación'], correcta:1, exp:'La meiosis reduce a la mitad el material genético para formar gametos.'},
+                  {pregunta:'En la mitosis, ¿cómo son las células resultantes respecto a la original?', opciones:['Idénticas','Con la mitad del genoma','Con el doble de cromosomas','Distintas entre sí'], correcta:0, exp:'La mitosis produce dos células genéticamente idénticas a la original.'},
                 ]
               },
             ]
@@ -519,6 +551,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'¿Cómo vivían los humanos del Paleolítico?', opciones:['Sedentarios','Nómades','Agricultores','Ciudadanos'], correcta:1, exp:'Eran nómades: se desplazaban siguiendo animales y alimentos.'},
                   {pregunta:'¿Qué hito ocurrió en el Paleolítico?', opciones:['La agricultura','El control del fuego','La escritura','La metalurgia'], correcta:1, exp:'El control del fuego fue transformador para la humanidad.'},
+                  {pregunta:'¿Qué tipo de herramientas usaban en el Paleolítico?', opciones:['Piedra tallada','Metal','Bronce','Hierro'], correcta:0, exp:'En el Paleolítico las herramientas eran de piedra tallada, más rudimentarias.'},
+                  {pregunta:'¿Dónde se encuentra arte rupestre famoso del Paleolítico?', opciones:['Altamira y Lascaux','Machu Picchu','Pirámides de Egipto','Coliseo Romano'], correcta:0, exp:'Las cuevas de Altamira (España) y Lascaux (Francia) tienen pinturas rupestres del Paleolítico.'},
                 ]
               },
               { id:2, titulo:'Neolítico: la revolución agrícola', bloqueado:true,
@@ -526,6 +560,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'Neolítico:\n→ Agricultura y ganadería\n→ Sedentarismo\n→ Primeras ciudades\n→ Cerámica, tejido, comercio',
                 ejercicios:[
                   {pregunta:'¿Qué permitió el sedentarismo en el Neolítico?', opciones:['La escritura','La agricultura y ganadería','El fuego','Los metales'], correcta:1, exp:'La agricultura les permitió producir alimentos en un lugar fijo.'},
+                  {pregunta:'¿En qué período se ubica el Neolítico?', opciones:['2,5 millones-10.000 a.C.','10.000-3.000 a.C.','3.000-1.000 a.C.','1.000 a.C.-0'], correcta:1, exp:'El Neolítico va de 10.000 a 3.000 a.C. aproximadamente.'},
+                  {pregunta:'¿Qué actividad NO es típica del Neolítico?', opciones:['Agricultura','Ganadería','Cerámica','Caza nómade exclusiva'], correcta:3, exp:'La caza nómade exclusiva es propia del Paleolítico; en el Neolítico se vuelven sedentarios.'},
+                  {pregunta:'¿Qué nuevo tipo de asentamiento surgió en el Neolítico?', opciones:['Campamentos temporales','Primeras ciudades','Cuevas','Ninguno'], correcta:1, exp:'El sedentarismo permitió el surgimiento de las primeras ciudades.'},
                 ]
               },
             ]
@@ -537,6 +574,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'Mesopotamia:\n→ Escritura cuneiforme (~3200 a.C.)\n→ Código de Hammurabi\n→ Rueda y arado\n→ Ciudades-estado: Ur, Uruk, Babilonia',
                 ejercicios:[
                   {pregunta:'¿Qué escritura inventaron los sumerios?', opciones:['Jeroglífica','Cuneiforme','Alfabética','Pictográfica'], correcta:1, exp:'La escritura cuneiforme en tablillas de arcilla fue la primera conocida.'},
+                  {pregunta:'¿Entre qué dos ríos se ubica Mesopotamia?', opciones:['Nilo y Éufrates','Tigris y Éufrates','Tigris y Nilo','Éufrates y Jordán'], correcta:1, exp:'Mesopotamia significa "entre ríos": Tigris y Éufrates.'},
+                  {pregunta:'¿Qué es el Código de Hammurabi?', opciones:['Un sistema de escritura','Un conjunto de leyes','Un templo religioso','Un tipo de cerámica'], correcta:1, exp:'El Código de Hammurabi es uno de los primeros conjuntos de leyes escritas de la historia.'},
+                  {pregunta:'¿Cuál de estas NO es una ciudad-estado mesopotámica?', opciones:['Ur','Uruk','Babilonia','Atenas'], correcta:3, exp:'Atenas es una ciudad griega, no mesopotámica.'},
                 ]
               },
             ]
@@ -656,6 +696,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'¿En qué capa vivimos?', opciones:['Manto','Núcleo','Corteza','Litosfera interna'], correcta:2, exp:'Vivimos en la corteza terrestre.'},
                   {pregunta:'¿Qué movimiento genera el día y la noche?', opciones:['Traslación','Rotación','Precesión','Nutación'], correcta:1, exp:'La rotación (giro sobre el eje en 24hs) genera día/noche.'},
+                  {pregunta:'¿Cuál es la capa más profunda de la Tierra?', opciones:['Corteza','Manto','Núcleo interno','Núcleo externo'], correcta:2, exp:'El núcleo interno, sólido y a 5000°C, es la capa más profunda.'},
+                  {pregunta:'¿Qué movimiento genera las estaciones del año?', opciones:['Rotación','Traslación','Precesión','Nutación'], correcta:1, exp:'La traslación (recorrido alrededor del Sol en 365 días) genera las estaciones.'},
                 ]
               },
               { id:2, titulo:'Regiones de Argentina', bloqueado:true,
@@ -663,6 +705,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'NOA → Puna, Jujuy, Salta\nNEA → Selvas, Misiones\nCUYO → Mendoza, San Juan\nPAMPA → Buenos Aires, agropecuaria\nPATAGONIA → Sur, viento, frío\nMETROPOLITANA → Buenos Aires',
                 ejercicios:[
                   {pregunta:'¿Qué región tiene más producción agropecuaria?', opciones:['NOA','Patagonia','Pampa','Cuyo'], correcta:2, exp:'La región pampeana concentra el 80% de la producción agropecuaria.'},
+                  {pregunta:'¿Qué región argentina se asocia con la Puna?', opciones:['Pampa','NOA','Patagonia','Cuyo'], correcta:1, exp:'La Puna es característica del NOA (Jujuy, Salta).'},
+                  {pregunta:'¿Qué región se caracteriza por el viento y el frío en el sur?', opciones:['Patagonia','NEA','Pampa','Metropolitana'], correcta:0, exp:'La Patagonia, al sur del país, se caracteriza por meseta, viento y frío.'},
+                  {pregunta:'¿Qué región incluye selvas y está en el noreste?', opciones:['NOA','NEA','Cuyo','Pampa'], correcta:1, exp:'El NEA (Misiones) se caracteriza por sus selvas.'},
                 ]
               },
             ]
@@ -774,6 +819,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'"She ___ to school every day."', opciones:['go','goes','going','went'], correcta:1, exp:'She = 3ª persona → goes.'},
                   {pregunta:'"They ___ football on weekends."', opciones:['plays','playing','play','played'], correcta:2, exp:'They = plural → play (sin -s).'},
+                  {pregunta:'"He ___ Spanish." (study)', opciones:['study','studies','studying','studied'], correcta:1, exp:'He = 3ª persona → studies.'},
+                  {pregunta:'"We ___ to the park every Sunday." (go)', opciones:['goes','go','going','went'], correcta:1, exp:'We = plural → go (sin -s).'},
                 ]
               },
               { id:2, titulo:'Present Simple: negatives & questions', bloqueado:true,
@@ -782,6 +829,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'"He ___ not eat meat."', opciones:['do','does','don\'t','is'], correcta:1, exp:'"Does" para he/she/it.'},
                   {pregunta:'"___ you like pizza?"', opciones:['Does','Do','Are','Have'], correcta:1, exp:'"Do" para I/you/we/they.'},
+                  {pregunta:'"They ___ live in Buenos Aires." (negative)', opciones:['doesn\'t','don\'t','isn\'t','not'], correcta:1, exp:'"Don\'t" para they/we/you/I.'},
+                  {pregunta:'"___ she speak English?"', opciones:['Do','Does','Is','Has'], correcta:1, exp:'"Does" para he/she/it en preguntas.'},
                 ]
               },
               { id:3, titulo:'Daily routines vocabulary', bloqueado:true,
@@ -790,6 +839,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'"Hacer la tarea" en inglés:', opciones:['make homework','do the homework','do homework','make the homework'], correcta:2, exp:'"Do homework" — sin artículo, verbo "do".'},
                   {pregunta:'"I ___ get up at 7am." (siempre)', opciones:['never','sometimes','always','often'], correcta:2, exp:'"Always" = siempre.'},
+                  {pregunta:'"Ir a la escuela" en inglés:', opciones:['go to school','going school','goes to school','go school'], correcta:0, exp:'"Go to school" es la forma correcta, con la preposición "to".'},
+                  {pregunta:'"She ___ has dinner at 9pm." (a veces)', opciones:['always','never','sometimes','usually'], correcta:2, exp:'"Sometimes" = a veces.'},
                 ]
               },
             ]
@@ -802,6 +853,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'Past simple of "go":', opciones:['goed','goes','went','gone'], correcta:2, exp:'"Go" es irregular → went.'},
                   {pregunta:'"Last night I ___ pizza." (eat)', opciones:['eated','eat','ate','eaten'], correcta:2, exp:'"Eat" es irregular → ate.'},
+                  {pregunta:'Past simple of "have":', opciones:['haved','has','had','having'], correcta:2, exp:'"Have" es irregular → had.'},
+                  {pregunta:'"Yesterday she ___ to the park." (come)', opciones:['comed','came','come','coming'], correcta:1, exp:'"Come" es irregular → came.'},
                 ]
               },
             ]
