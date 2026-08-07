@@ -110,6 +110,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'x + y = 10\nx − y = 4\n→ Sumando: 2x=14 → x=7\n→ y=10−7=3',
                 ejercicios:[
                   {pregunta:'Si x+y=8 y x−y=2, ¿cuánto vale x?', opciones:['3','4','5','6'], correcta:2, exp:'Sumando: 2x=10 → x=5.'},
+                  {pregunta:'Si x+y=12 y x−y=4, ¿cuánto vale y?', opciones:['2','3','4','5'], correcta:2, exp:'Restando las ecuaciones: 2y=8 → y=4.'},
+                  {pregunta:'Si 2x+y=10 y x=3, ¿cuánto vale y?', opciones:['2','3','4','5'], correcta:2, exp:'2(3)+y=10 → y=10−6=4.'},
+                  {pregunta:'Si x=2y y x+y=9, ¿cuánto vale y?', opciones:['2','3','4','5'], correcta:1, exp:'2y+y=3y=9 → y=3.'},
                 ]
               },
               { id:2, titulo:'Funciones lineales', bloqueado:true,
@@ -117,6 +120,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'y = mx + b\ny = 2x+1\nx=0→y=1, x=1→y=3, x=2→y=5',
                 ejercicios:[
                   {pregunta:'En y=3x+2, si x=4, ¿cuánto vale y?', opciones:['10','12','14','16'], correcta:2, exp:'y=3(4)+2=14.'},
+                  {pregunta:'¿Cuál es la pendiente de y=5x−3?', opciones:['5','−3','3','−5'], correcta:0, exp:'En y=mx+b, m es la pendiente: m=5.'},
+                  {pregunta:'En y=−2x+4, ¿la función es creciente o decreciente?', opciones:['Creciente','Decreciente','Constante','No es función'], correcta:1, exp:'m=−2<0, la función es decreciente.'},
+                  {pregunta:'¿Cuál es la ordenada al origen de y=4x+7?', opciones:['4','7','11','0'], correcta:1, exp:'La ordenada al origen es b=7 (valor de y cuando x=0).'},
                 ]
               },
               { id:3, titulo:'Porcentajes', bloqueado:true,
@@ -125,6 +131,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'¿Cuánto es el 25% de 200?', opciones:['25','40','50','75'], correcta:2, exp:'200×25/100=50.'},
                   {pregunta:'Producto $1000 con 20% descuento. ¿Precio final?', opciones:['$800','$900','$750','$850'], correcta:0, exp:'$1000×0,80=$800.'},
+                  {pregunta:'¿Cuánto es el 10% de 450?', opciones:['40','45','50','55'], correcta:1, exp:'450×10/100=45.'},
+                  {pregunta:'Producto de $2000 con un aumento del 15%. ¿Precio final?', opciones:['$2150','$2200','$2300','$2500'], correcta:2, exp:'$2000×1,15=$2300.'},
                 ]
               },
             ]
@@ -155,6 +163,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'SOH: sen(α) = Opuesto/Hipotenusa\nCAH: cos(α) = Adyacente/Hipotenusa\nTOA: tan(α) = Opuesto/Adyacente',
                 ejercicios:[
                   {pregunta:'Hipotenusa=10, cateto opuesto=6. ¿sen(α)?', opciones:['0,4','0,6','0,8','0,5'], correcta:1, exp:'sen(α)=6/10=0,6.'},
+                  {pregunta:'Hipotenusa=10, cateto adyacente=8. ¿cos(α)?', opciones:['0,6','0,8','0,5','1'], correcta:1, exp:'cos(α)=8/10=0,8.'},
+                  {pregunta:'Cateto opuesto=3, cateto adyacente=4. ¿tan(α)?', opciones:['0,75','1,33','0,5','3'], correcta:0, exp:'tan(α)=opuesto/adyacente=3/4=0,75.'},
+                  {pregunta:'SOH-CAH-TOA: ¿qué representa la "C"?', opciones:['Cateto','Coseno','Cociente','Circunferencia'], correcta:1, exp:'CAH: Coseno = Adyacente/Hipotenusa.'},
                 ]
               },
             ]
@@ -172,6 +183,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'f(x)=2ˣ\nx=0→1, x=1→2, x=2→4, x=3→8\n\nInterés compuesto: M=C×(1+r)ᵗ',
                 ejercicios:[
                   {pregunta:'¿Cuánto vale 3⁴?', opciones:['12','64','81','27'], correcta:2, exp:'3⁴=3×3×3×3=81.'},
+                  {pregunta:'¿Cuánto vale 2⁵?', opciones:['16','32','64','10'], correcta:1, exp:'2⁵=2×2×2×2×2=32.'},
+                  {pregunta:'f(x)=2ˣ. ¿Cuánto vale f(3)?', opciones:['6','8','9','16'], correcta:1, exp:'f(3)=2³=8.'},
+                  {pregunta:'¿Qué tipo de crecimiento modela el interés compuesto?', opciones:['Lineal','Exponencial','Decreciente lineal','Ninguno'], correcta:1, exp:'El interés compuesto crece de forma exponencial, no lineal.'},
                 ]
               },
               { id:2, titulo:'Logaritmos', bloqueado:true,
@@ -179,6 +193,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'log₁₀(1000)=3 porque 10³=1000\nlog₂(8)=3 porque 2³=8\nlog₁₀(1)=0 porque 10⁰=1',
                 ejercicios:[
                   {pregunta:'log₁₀(100) = ?', opciones:['1','2','10','100'], correcta:1, exp:'10²=100, entonces log₁₀(100)=2.'},
+                  {pregunta:'log₂(8) = ?', opciones:['2','3','4','8'], correcta:1, exp:'2³=8, entonces log₂(8)=3.'},
+                  {pregunta:'log₁₀(1) = ?', opciones:['0','1','10','−1'], correcta:0, exp:'10⁰=1, entonces log₁₀(1)=0.'},
+                  {pregunta:'log₁₀(1000) = ?', opciones:['2','3','4','1000'], correcta:1, exp:'10³=1000, entonces log₁₀(1000)=3.'},
                 ]
               },
               { id:3, titulo:'Estadística: medidas de tendencia', bloqueado:true,
@@ -186,6 +203,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'Media: x̄ = Σx/n\n{2,3,3,5,7} → Media=4, Mediana=3, Moda=3',
                 ejercicios:[
                   {pregunta:'Media de {4,8,12,16}:', opciones:['8','10','12','9'], correcta:1, exp:'(4+8+12+16)/4=40/4=10.'},
+                  {pregunta:'Mediana de {2,3,3,5,7}:', opciones:['2','3','5','7'], correcta:1, exp:'El valor central de la lista ordenada es 3.'},
+                  {pregunta:'Moda de {2,3,3,5,7}:', opciones:['2','3','5','7'], correcta:1, exp:'3 es el valor que más se repite.'},
+                  {pregunta:'Media de {10,20,30}:', opciones:['15','20','25','30'], correcta:1, exp:'(10+20+30)/3=60/3=20.'},
                 ]
               },
             ]
@@ -203,6 +223,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'lím(x→3) de 2x+1 = 7\n(reemplazamos x=3)',
                 ejercicios:[
                   {pregunta:'lím(x→3) de 2x+1 = ?', opciones:['6','7','8','5'], correcta:1, exp:'2(3)+1=7.'},
+                  {pregunta:'lím(x→2) de x²+1 = ?', opciones:['3','4','5','6'], correcta:2, exp:'2²+1=5.'},
+                  {pregunta:'lím(x→0) de 5x+3 = ?', opciones:['0','3','5','8'], correcta:1, exp:'5(0)+3=3.'},
+                  {pregunta:'lím(x→1) de 3x−2 = ?', opciones:['0','1','2','3'], correcta:1, exp:'3(1)−2=1.'},
                 ]
               },
               { id:2, titulo:'Derivadas: concepto y reglas', bloqueado:true,
@@ -210,6 +233,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'d/dx(xⁿ) = n·xⁿ⁻¹\nd/dx(x²) = 2x\nd/dx(x³) = 3x²\nd/dx(constante) = 0',
                 ejercicios:[
                   {pregunta:'Si f(x)=x², ¿cuánto vale f\'(x)?', opciones:['x','2x','2x²','x/2'], correcta:1, exp:'d/dx(x²)=2x.'},
+                  {pregunta:'Si f(x)=x³, ¿cuánto vale f\'(x)?', opciones:['x²','2x²','3x²','3x'], correcta:2, exp:'d/dx(x³)=3x².'},
+                  {pregunta:'¿Cuánto vale la derivada de una constante?', opciones:['0','1','La constante','x'], correcta:0, exp:'d/dx(constante)=0.'},
+                  {pregunta:'Si f(x)=5x, ¿cuánto vale f\'(x)?', opciones:['x','5','5x','0'], correcta:1, exp:'d/dx(5x)=5 (la derivada de kx es k).'},
                 ]
               },
             ]
@@ -227,6 +253,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'∫xⁿ dx = xⁿ⁺¹/(n+1) + C\n∫2x dx = x² + C\n∫₀² 2x dx = [x²]₀² = 4',
                 ejercicios:[
                   {pregunta:'∫3x² dx = ?', opciones:['x³','x³+C','3x³+C','6x'], correcta:1, exp:'∫3x² dx = x³+C.'},
+                  {pregunta:'∫2x dx = ?', opciones:['x²','x²+C','2x²+C','x'], correcta:1, exp:'∫2x dx = x²+C.'},
+                  {pregunta:'∫x dx = ?', opciones:['x²+C','x²/2+C','x+C','1'], correcta:1, exp:'∫xⁿ dx=xⁿ⁺¹/(n+1)+C → ∫x dx=x²/2+C.'},
+                  {pregunta:'¿Qué representa la integral definida ∫ₐᵇ f(x)dx?', opciones:['La pendiente de f','El área bajo la curva entre a y b','El máximo de f','La derivada de f'], correcta:1, exp:'La integral definida representa el área bajo la curva entre los límites a y b.'},
                 ]
               },
               { id:2, titulo:'Interés compuesto', bloqueado:true,
@@ -234,6 +263,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'Simple: I = C×r×t\nCompuesto: M = C×(1+r)ᵗ\n\n$10.000 al 10% anual, 3 años:\nCompuesto: M=10000×(1,1)³=$13.310',
                 ejercicios:[
                   {pregunta:'$5000 al 8% simple, 2 años. ¿Interés?', opciones:['$400','$800','$1000','$600'], correcta:1, exp:'I=5000×0,08×2=$800.'},
+                  {pregunta:'$10.000 al 10% anual compuesto, 2 años. ¿Monto final aproximado?', opciones:['$11.000','$12.000','$12.100','$13.000'], correcta:2, exp:'M=10000×(1,1)²=$12.100.'},
+                  {pregunta:'¿Cuál crece más rápido a largo plazo?', opciones:['Interés simple','Interés compuesto','Crecen igual','Ninguno'], correcta:1, exp:'El interés compuesto genera intereses sobre intereses: crece más rápido.'},
+                  {pregunta:'$3000 al 5% simple, 4 años. ¿Interés total?', opciones:['$500','$600','$700','$800'], correcta:1, exp:'I=3000×0,05×4=$600.'},
                 ]
               },
             ]
@@ -323,6 +355,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'Características:\n→ Mezcla realidad y magia\n→ Personajes aceptan lo sobrenatural\n→ Crítica social implícita\nEj: "Cien años de soledad"',
                 ejercicios:[
                   {pregunta:'¿Qué caracteriza al realismo mágico?', opciones:['Solo describe la realidad','Mezcla realidad y elementos mágicos','Es solo fantástico','No tiene personajes'], correcta:1, exp:'Integra lo mágico en la realidad sin explicarlo.'},
+                  {pregunta:'¿Quién escribió "Cien años de soledad"?', opciones:['Jorge Luis Borges','Gabriel García Márquez','Julio Cortázar','Pablo Neruda'], correcta:1, exp:'Gabriel García Márquez es el autor de esta obra emblemática del realismo mágico.'},
+                  {pregunta:'En el realismo mágico, ¿cómo reaccionan los personajes ante lo sobrenatural?', opciones:['Con miedo extremo','Lo aceptan con naturalidad','Lo niegan siempre','No aparece lo sobrenatural'], correcta:1, exp:'Los personajes aceptan lo mágico como parte normal de la realidad, sin sorprenderse.'},
+                  {pregunta:'¿Qué elemento suele estar presente en el realismo mágico?', opciones:['Crítica social implícita','Solo humor','Ciencia ficción','Terror explícito'], correcta:0, exp:'El realismo mágico suele incluir una crítica social velada dentro del relato.'},
                 ]
               },
             ]
@@ -341,6 +376,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'"El tiempo es oro" es:', opciones:['Símil','Metáfora','Hipérbole','Anáfora'], correcta:1, exp:'Metáfora: comparación directa sin "como".'},
                   {pregunta:'"Lloré un océano de lágrimas" es:', opciones:['Metáfora','Anáfora','Hipérbole','Personificación'], correcta:2, exp:'Hipérbole: exageración para dar énfasis.'},
+                  {pregunta:'"El viento susurra entre los árboles" es:', opciones:['Metáfora','Personificación','Hipérbole','Anáfora'], correcta:1, exp:'Personificación: se le da una acción humana (susurrar) a algo que no es humano.'},
+                  {pregunta:'"Vendrá, vendrá, vendrá la primavera" es un ejemplo de:', opciones:['Metáfora','Símil','Anáfora','Hipérbole'], correcta:2, exp:'Anáfora: repetición de una palabra al inicio de frases sucesivas.'},
                 ]
               },
             ]
@@ -358,6 +395,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'Tragedia:\n→ Héroe con falla (hybris)\n→ Destino inevitable\n→ Catarsis: purificación emocional\n→ Coro: voz del pueblo',
                 ejercicios:[
                   {pregunta:'¿Qué es la catarsis en la tragedia?', opciones:['La muerte del héroe','Purificación emocional del espectador','El conflicto','El desenlace'], correcta:1, exp:'Catarsis: purificación de miedo y compasión en el espectador.'},
+                  {pregunta:'¿Qué es la "hybris" en la tragedia griega?', opciones:['La falla trágica del héroe, su exceso de orgullo','El coro que canta','El escenario del teatro','El final feliz'], correcta:0, exp:'La hybris es el exceso de orgullo o soberbia que lleva al héroe a su caída.'},
+                  {pregunta:'¿Qué función cumple el coro en la tragedia griega?', opciones:['Es el protagonista','Representa la voz del pueblo y comenta la acción','Solo hace música','No tiene función'], correcta:1, exp:'El coro comenta la acción y representa la voz colectiva del pueblo.'},
+                  {pregunta:'¿Cuál de estas obras es de Shakespeare?', opciones:['Hamlet','Edipo Rey','Antígona','La Odisea'], correcta:0, exp:'Hamlet es una de las tragedias más conocidas de Shakespeare.'},
                 ]
               },
             ]
@@ -375,6 +415,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'Analizar un medio:\n1. ¿Quién lo produce?\n2. ¿Para quién?\n3. ¿Qué incluye y omite?\n4. ¿Qué recursos persuasivos usa?\n5. ¿Qué imagen construye?',
                 ejercicios:[
                   {pregunta:'¿Cuál es el objetivo del análisis crítico de medios?', opciones:['Criticar periodistas','Identificar intereses y construcción del relato','Buscar errores gramaticales','Aprender a escribir noticias'], correcta:1, exp:'Identificar quién habla, desde dónde y con qué intereses.'},
+                  {pregunta:'¿Qué pregunta es clave al analizar un medio críticamente?', opciones:['¿Qué colores usa?','¿Quién lo produce y con qué intereses?','¿Cuántas páginas tiene?','¿Es gratis o pago?'], correcta:1, exp:'Identificar quién produce el contenido y sus intereses es clave del análisis crítico.'},
+                  {pregunta:'¿Qué recurso usan los medios para persuadir?', opciones:['Lenguaje emotivo y selección de datos','Solo datos neutros','Silencio total','Ninguno'], correcta:0, exp:'Los medios suelen usar lenguaje emotivo y selección de datos para persuadir.'},
+                  {pregunta:'¿Qué significa que un medio "omite" información?', opciones:['Que la exagera','Que la deja afuera deliberadamente','Que la traduce','Que la repite'], correcta:1, exp:'Omitir es dejar afuera información relevante, lo cual también construye un relato.'},
                 ]
               },
             ]
@@ -392,6 +435,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'Borges → cuento fantástico e intelectual\nCortázar → realismo mágico, ruptura\nPuig → lenguaje popular, cine\nWalsh → periodismo y denuncia\nSaer → la memoria y el litoral',
                 ejercicios:[
                   {pregunta:'¿Qué autor argentino es conocido por sus "Ficciones"?', opciones:['Cortázar','Walsh','Borges','Puig'], correcta:2, exp:'Jorge Luis Borges es el máximo exponente del cuento fantástico argentino.'},
+                  {pregunta:'¿Qué autor argentino es conocido por "Rayuela"?', opciones:['Borges','Cortázar','Walsh','Puig'], correcta:1, exp:'Julio Cortázar escribió "Rayuela", novela emblemática de la ruptura narrativa.'},
+                  {pregunta:'Rodolfo Walsh es reconocido principalmente por:', opciones:['El cuento fantástico','La poesía romántica','El periodismo y la denuncia política','El teatro clásico'], correcta:2, exp:'Walsh combinó periodismo y literatura para denunciar violaciones a los derechos humanos.'},
+                  {pregunta:'¿Qué caracteriza la narrativa de Cortázar?', opciones:['Es siempre lineal y tradicional','Rompe con la estructura narrativa tradicional','Solo escribe teatro','Evita el lenguaje coloquial'], correcta:1, exp:'Cortázar es conocido por romper con las estructuras narrativas convencionales.'},
                 ]
               },
             ]
@@ -457,6 +503,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'Aa × Aa:\n→ AA, Aa, Aa, aa (1:2:1)\nFenotipos: 3 dominantes : 1 recesivo',
                 ejercicios:[
                   {pregunta:'Al cruzar AA × aa, ¿genotipo F1?', opciones:['AA','aa','Aa','50% AA y 50% aa'], correcta:2, exp:'Todos son Aa. Primera ley de Mendel.'},
+                  {pregunta:'Al cruzar Aa × Aa, ¿qué proporción fenotípica se espera?', opciones:['1:1','3:1','1:2:1','2:2'], correcta:1, exp:'3 dominantes : 1 recesivo (proporción fenotípica clásica).'},
+                  {pregunta:'¿Qué significa que un alelo sea recesivo?', opciones:['Siempre se expresa','Se oculta si está junto a uno dominante','No existe en la naturaleza','Es más fuerte que el dominante'], correcta:1, exp:'El alelo recesivo solo se expresa si el individuo es homocigota recesivo (aa).'},
+                  {pregunta:'Un individuo Aa se llama:', opciones:['Homocigota dominante','Homocigota recesivo','Heterocigota','Mutante'], correcta:2, exp:'Aa tiene un alelo de cada tipo: es heterocigota.'},
                 ]
               },
             ]
@@ -474,6 +523,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'Ptialina (boca): almidón\nPepsina (estómago): proteínas\nLipasa (intestino): grasas\n\nAbsorción: intestino delgado',
                 ejercicios:[
                   {pregunta:'¿Dónde se absorben principalmente los nutrientes?', opciones:['Estómago','Boca','Intestino delgado','Intestino grueso'], correcta:2, exp:'El intestino delgado absorbe los nutrientes.'},
+                  {pregunta:'¿Qué enzima actúa en la boca sobre el almidón?', opciones:['Pepsina','Ptialina','Lipasa','Bilis'], correcta:1, exp:'La ptialina (amilasa salival) comienza a digerir el almidón en la boca.'},
+                  {pregunta:'¿Qué enzima digiere las proteínas en el estómago?', opciones:['Ptialina','Lipasa','Pepsina','Bilis'], correcta:2, exp:'La pepsina digiere proteínas en el ambiente ácido del estómago.'},
+                  {pregunta:'¿Cuál es el orden correcto del tubo digestivo?', opciones:['Boca-Estómago-Esófago-Intestino','Boca-Esófago-Estómago-Intestino delgado','Esófago-Boca-Estómago-Intestino','Boca-Intestino-Estómago-Esófago'], correcta:1, exp:'El recorrido correcto es boca, esófago, estómago, intestino delgado y grueso.'},
                 ]
               },
             ]
@@ -491,6 +543,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'Bases nitrogenadas:\nA — T (Adenina-Timina)\nG — C (Guanina-Citosina)\n\nSi cadena: AATGCC\nComplementaria: TTACGG',
                 ejercicios:[
                   {pregunta:'Si ADN es AATGCC, ¿cadena complementaria?', opciones:['TTACGG','AATGCC','TTACCC','AAGCC'], correcta:0, exp:'A-T, A-T, T-A, G-C, C-G, C-G → TTACGG.'},
+                  {pregunta:'¿Quiénes descubrieron la estructura de doble hélice del ADN?', opciones:['Mendel y Darwin','Watson y Crick','Doudna y Charpentier','Pasteur y Koch'], correcta:1, exp:'James Watson y Francis Crick describieron la doble hélice del ADN en 1953.'},
+                  {pregunta:'¿Qué bases nitrogenadas se emparejan entre sí?', opciones:['A con G, T con C','A con T, G con C','A con C, T con G','Todas se emparejan entre sí'], correcta:1, exp:'Adenina con Timina, Guanina con Citosina (complementariedad de bases).'},
+                  {pregunta:'Si una cadena de ADN es GGCAT, ¿cuál es su complementaria?', opciones:['CCGTA','CCTGA','GGCAT','TTAGC'], correcta:0, exp:'G-C, G-C, C-G, A-T, T-A → CCGTA.'},
                 ]
               },
             ]
@@ -508,6 +563,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'Productor → C.1° → C.2° → Descomponedor\nPasto → Vaca → León → Hongos\n\nRegla del 10%: se pierde 90% en cada nivel',
                 ejercicios:[
                   {pregunta:'¿Qué organismo es siempre productor?', opciones:['León','Vaca','Planta','Hongo'], correcta:2, exp:'Las plantas fabrican materia orgánica con luz solar.'},
+                  {pregunta:'Según la regla del 10%, si un productor tiene 1000 kcal, ¿cuánta energía llega al 2do nivel?', opciones:['1000 kcal','100 kcal','10 kcal','500 kcal'], correcta:1, exp:'Solo el 10% de la energía pasa al siguiente nivel: 1000×0,10=100 kcal.'},
+                  {pregunta:'¿Qué función cumplen los descomponedores?', opciones:['Producen su propio alimento','Descomponen materia orgánica muerta','Son siempre depredadores','No cumplen función en el ecosistema'], correcta:1, exp:'Los descomponedores (hongos, bacterias) reciclan la materia orgánica muerta.'},
+                  {pregunta:'En la cadena Pasto→Vaca→León, ¿qué es la vaca?', opciones:['Productor','Consumidor primario','Consumidor secundario','Descomponedor'], correcta:1, exp:'La vaca come pasto (productor), por lo tanto es consumidor primario.'},
                 ]
               },
             ]
@@ -525,6 +583,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'Cómo funciona CRISPR:\n1. ARN guía localiza secuencia\n2. Cas9 corta el ADN\n3. Célula repara el corte\n4. Podemos insertar/eliminar genes',
                 ejercicios:[
                   {pregunta:'¿Quiénes ganaron el Nobel 2020 por CRISPR?', opciones:['Watson y Crick','Doudna y Charpentier','Mendel y Darwin','Pasteur y Koch'], correcta:1, exp:'Jennifer Doudna y Emmanuelle Charpentier, Nobel de Química 2020.'},
+                  {pregunta:'¿Qué hace la proteína Cas9 en el sistema CRISPR?', opciones:['Localiza la secuencia de ADN','Corta el ADN en el sitio indicado','Repara automáticamente el ADN','Traduce el ARN a proteína'], correcta:1, exp:'Cas9 es la "tijera molecular" que corta el ADN en el sitio señalado por el ARN guía.'},
+                  {pregunta:'¿Qué elemento guía a Cas9 hacia la secuencia correcta?', opciones:['El ARN guía','El ADN mitocondrial','Una proteína señuelo','Un anticuerpo'], correcta:0, exp:'El ARN guía dirige a Cas9 hacia la secuencia de ADN que se quiere editar.'},
+                  {pregunta:'¿Qué aplicación NO es típica de CRISPR?', opciones:['Edición genética','Terapias contra enfermedades genéticas','Mejora de cultivos','Generar energía eléctrica'], correcta:3, exp:'CRISPR se usa en edición genética, medicina y agricultura, no en generación de energía.'},
                 ]
               },
             ]
@@ -594,6 +655,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'REY → concede feudos\nNOBLES → subarrendan\nCABALLEROS → protegen\nSIERVOS → trabajan la tierra',
                 ejercicios:[
                   {pregunta:'¿Qué recibían los nobles a cambio de lealtad al rey?', opciones:['Dinero','Tierras (feudos)','Ejércitos','Títulos'], correcta:1, exp:'El rey concedía feudos (tierras) a cambio de lealtad.'},
+                  {pregunta:'¿Quién trabajaba la tierra en el sistema feudal?', opciones:['Los reyes','Los nobles','Los siervos','Los caballeros'], correcta:2, exp:'Los siervos trabajaban la tierra a cambio de protección.'},
+                  {pregunta:'¿En qué siglos se desarrolló el feudalismo europeo?', opciones:['I-V','V-XV','XVI-XVIII','XIX-XX'], correcta:1, exp:'El feudalismo se desarrolló principalmente entre los siglos V y XV.'},
+                  {pregunta:'¿Cuál era la función de los caballeros en el feudalismo?', opciones:['Trabajar la tierra','Proteger el feudo','Cobrar impuestos al rey','Ninguna'], correcta:1, exp:'Los caballeros protegían el feudo a cambio de tierras y lealtad.'},
                 ]
               },
             ]
@@ -612,6 +676,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'¿En qué año llegó Colón a América?', opciones:['1492','1500','1519','1532'], correcta:0, exp:'Cristóbal Colón llegó el 12 de octubre de 1492.'},
                   {pregunta:'¿Quién refundó Buenos Aires en 1580?', opciones:['Pedro de Mendoza','Juan de Garay','Francisco Pizarro','Hernán Cortés'], correcta:1, exp:'Juan de Garay refundó Buenos Aires en 1580.'},
+                  {pregunta:'¿Qué fue la encomienda?', opciones:['Un sistema de trabajo forzado indígena','Un tipo de moneda','Una ciudad colonial','Un tratado de paz'], correcta:0, exp:'La encomienda era un sistema de trabajo forzado impuesto a los pueblos originarios.'},
+                  {pregunta:'¿Quién fundó Buenos Aires por primera vez en 1536?', opciones:['Juan de Garay','Pedro de Mendoza','Diego de Almagro','Francisco Pizarro'], correcta:1, exp:'Pedro de Mendoza fundó Buenos Aires por primera vez en 1536.'},
                 ]
               },
               { id:2, titulo:'Revolución de Mayo', bloqueado:true,
@@ -619,6 +685,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'Causas:\n→ Invasión napoleónica a España (1808)\n→ Ideas ilustradas\n→ Ejemplo EEUU (1776) y Francia (1789)\n→ Malestar criollo\n\n25/05/1810: Primera Junta\nPresidente: Cornelio Saavedra',
                 ejercicios:[
                   {pregunta:'¿Qué evento europeo favoreció la Revolución?', opciones:['Revolución Francesa','Invasión napoleónica a España','Guerra con Portugal','Reforma protestante'], correcta:1, exp:'La invasión de Napoleón a España (1808) generó crisis de autoridad.'},
+                  {pregunta:'¿En qué fecha se conformó la Primera Junta de Gobierno?', opciones:['9 de julio de 1816','25 de mayo de 1810','20 de junio de 1820','1 de mayo de 1853'], correcta:1, exp:'La Primera Junta se conformó el 25 de mayo de 1810.'},
+                  {pregunta:'¿Quién presidió la Primera Junta?', opciones:['Cornelio Saavedra','Manuel Belgrano','Juan Manuel de Rosas','Bernardino Rivadavia'], correcta:0, exp:'Cornelio Saavedra presidió la Primera Junta de Gobierno.'},
+                  {pregunta:'¿Qué ideas influyeron en la Revolución de Mayo?', opciones:['Las ideas ilustradas','El feudalismo','El mercantilismo colonial','Ninguna idea externa'], correcta:0, exp:'Las ideas ilustradas de libertad e igualdad influyeron fuertemente en el proceso revolucionario.'},
                 ]
               },
             ]
@@ -636,6 +705,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'MANIA:\nMilitarismo\nAlianzas\nNacionalismo\nImperialismo\nAsesinato (Franz Ferdinand, 1914)\n\nEntente: Francia, RU, Rusia\nAlianza: Alemania, Austria-H., Italia',
                 ejercicios:[
                   {pregunta:'¿Qué evento detonó la Primera Guerra?', opciones:['Hundimiento del Lusitania','Asesinato de Francisco Fernando','Invasión de Polonia','Crisis de los misiles'], correcta:1, exp:'El asesinato en Sarajevo el 28/06/1914 desencadenó el conflicto.'},
+                  {pregunta:'¿Qué significa la "M" en la sigla MANIA (causas de la Primera Guerra)?', opciones:['Militarismo','Migración','Monarquía','Moneda'], correcta:0, exp:'M de Militarismo: la carrera armamentista entre potencias europeas.'},
+                  {pregunta:'¿Qué bando integraba la Triple Entente?', opciones:['Alemania, Austria-Hungría, Italia','Francia, Reino Unido, Rusia','España, Portugal, Italia','EEUU, Japón, China'], correcta:1, exp:'La Triple Entente estaba formada por Francia, Reino Unido y Rusia.'},
+                  {pregunta:'¿En qué años se desarrolló la Primera Guerra Mundial?', opciones:['1914-1918','1939-1945','1904-1908','1918-1922'], correcta:0, exp:'La Primera Guerra Mundial se desarrolló entre 1914 y 1918.'},
                 ]
               },
             ]
@@ -653,6 +725,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'24/03/1976: Golpe de Estado\nJunta: Videla, Massera, Agosti\n\nCrímenes:\n→ 30.000 desaparecidos\n→ 500+ niños robados\n→ ESMA y otros centros\n→ Exilio masivo\n\nMadres de Plaza de Mayo: resistencia',
                 ejercicios:[
                   {pregunta:'¿Cuándo comenzó la última dictadura argentina?', opciones:['24/03/1976','25/05/1810','9/07/1816','10/12/1983'], correcta:0, exp:'El 24 de marzo de 1976 comenzó la última dictadura cívico-militar.'},
+                  {pregunta:'¿Aproximadamente cuántos desaparecidos dejó la última dictadura argentina?', opciones:['3.000','10.000','30.000','100.000'], correcta:2, exp:'Se estima en 30.000 la cifra de personas desaparecidas durante la dictadura.'},
+                  {pregunta:'¿Qué organización de derechos humanos surgió como resistencia durante la dictadura?', opciones:['Madres de Plaza de Mayo','Cruz Roja Argentina','ONU Argentina','Ninguna'], correcta:0, exp:'Las Madres de Plaza de Mayo se organizaron para reclamar por sus hijos desaparecidos.'},
+                  {pregunta:'¿En qué año terminó la última dictadura argentina?', opciones:['1976','1980','1983','1990'], correcta:2, exp:'La dictadura terminó en 1983 con el retorno de la democracia.'},
                 ]
               },
             ]
@@ -670,6 +745,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'1989: caída del Muro de Berlín\n1991: disolución de la URSS\n2001: atentados del 11-S\n2008: crisis financiera global\n2020s: multipolaridad (China ascende)',
                 ejercicios:[
                   {pregunta:'¿Cuándo cayó el Muro de Berlín?', opciones:['1989','1991','1987','1993'], correcta:0, exp:'El Muro de Berlín cayó el 9 de noviembre de 1989.'},
+                  {pregunta:'¿Qué evento marcó el fin de la URSS?', opciones:['La caída del Muro de Berlín','Su disolución en 1991','La Segunda Guerra Mundial','El Tratado de Versalles'], correcta:1, exp:'La URSS se disolvió formalmente en 1991, dos años después de la caída del Muro.'},
+                  {pregunta:'¿Qué proceso se aceleró tras el fin de la Guerra Fría?', opciones:['El aislacionismo mundial','La globalización','El feudalismo','La colonización europea'], correcta:1, exp:'Tras el fin de la Guerra Fría, la globalización económica y cultural se aceleró.'},
+                  {pregunta:'¿Qué país emergió como nueva potencia económica en las últimas décadas?', opciones:['Rusia','China','Brasil','Canadá'], correcta:1, exp:'China emergió como una de las principales potencias económicas mundiales.'},
                 ]
               },
             ]
@@ -725,6 +803,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'Crecimiento = Natalidad − Mortalidad\n\n1. India: 1.440 millones\n2. China: 1.400 millones\n3. EEUU: 340 millones\nArgentina: ~46 millones',
                 ejercicios:[
                   {pregunta:'¿Qué país tiene más población actualmente?', opciones:['China','India','EEUU','Brasil'], correcta:1, exp:'India superó a China en 2023 con ~1.440 millones.'},
+                  {pregunta:'¿Cómo se calcula el crecimiento poblacional?', opciones:['Natalidad + mortalidad','Natalidad − mortalidad','Solo natalidad','Solo mortalidad'], correcta:1, exp:'El crecimiento poblacional es la diferencia entre nacimientos y muertes.'},
+                  {pregunta:'¿Cuál es la población aproximada de Argentina?', opciones:['~15 millones','~46 millones','~100 millones','~200 millones'], correcta:1, exp:'Argentina tiene aproximadamente 46 millones de habitantes.'},
+                  {pregunta:'¿En qué año la población mundial superó los 8.000 millones?', opciones:['2010','2015','2022','2030'], correcta:2, exp:'La población mundial superó los 8.000 millones en 2022.'},
                 ]
               },
             ]
@@ -742,6 +823,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'UE: 27 países europeos, euro\nASEAN: 10 países del SE asiático\nMERCOSUR: Argentina+Brasil+Uruguay+Paraguay\nBRICS: Brasil, Rusia, India, China, SA',
                 ejercicios:[
                   {pregunta:'¿Cuántos países integran la UE?', opciones:['25','27','30','28'], correcta:1, exp:'La UE tiene 27 países desde el Brexit (2020).'},
+                  {pregunta:'¿Qué países integran el MERCOSUR (miembros plenos originales)?', opciones:['Argentina, Brasil, Uruguay, Paraguay','México, EEUU, Canadá','España, Francia, Italia','China, Japón, Corea'], correcta:0, exp:'El MERCOSUR fue fundado por Argentina, Brasil, Uruguay y Paraguay.'},
+                  {pregunta:'¿Qué significa BRICS?', opciones:['Un bloque militar','Un grupo de economías emergentes','Una moneda única','Un tratado europeo'], correcta:1, exp:'BRICS agrupa a Brasil, Rusia, India, China y Sudáfrica, economías emergentes.'},
+                  {pregunta:'¿Qué moneda usa la Unión Europea en la mayoría de sus países?', opciones:['El dólar','El euro','La libra','El yen'], correcta:1, exp:'El euro es la moneda única de la mayoría de los países de la UE.'},
                 ]
               },
             ]
@@ -759,6 +843,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'NO renovables:\nPetróleo, gas, carbón, nuclear\n\nRENOVABLES:\nSolar, eólica, hidráulica\nGeotérmica, biomasa',
                 ejercicios:[
                   {pregunta:'¿Cuál es una energía renovable?', opciones:['Petróleo','Gas natural','Energía solar','Carbón'], correcta:2, exp:'La energía solar proviene del Sol, fuente inagotable.'},
+                  {pregunta:'¿Qué porcentaje de la energía mundial generan aproximadamente los combustibles fósiles?', opciones:['30%','50%','80%','100%'], correcta:2, exp:'Los combustibles fósiles generan aproximadamente el 80% de la energía mundial.'},
+                  {pregunta:'¿Cuál de estas NO es una energía renovable?', opciones:['Eólica','Hidráulica','Carbón','Geotérmica'], correcta:2, exp:'El carbón es un combustible fósil no renovable.'},
+                  {pregunta:'¿Qué problema ambiental generan principalmente los combustibles fósiles?', opciones:['Aumento del CO2 y el efecto invernadero','Enfriamiento global','Aumento de oxígeno','Ninguno'], correcta:0, exp:'La quema de combustibles fósiles libera CO2, que intensifica el efecto invernadero.'},
                 ]
               },
             ]
@@ -776,6 +863,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'Gases de efecto invernadero:\nCO2 → combustión fósiles\nCH4 → ganadería y residuos\nN2O → agricultura\n\nAcuerdo de París: máximo +1,5°C\nActual: ya +1,2°C',
                 ejercicios:[
                   {pregunta:'¿Cuál es el principal GEI producido por humanos?', opciones:['Oxígeno','CO2','Nitrógeno','Argón'], correcta:1, exp:'El CO2 de combustibles fósiles es el principal responsable.'},
+                  {pregunta:'¿Qué gas de efecto invernadero está asociado a la ganadería?', opciones:['CO2','CH4 (metano)','Oxígeno','Nitrógeno puro'], correcta:1, exp:'El metano (CH4) es liberado principalmente por la ganadería y los residuos orgánicos.'},
+                  {pregunta:'Según el Acuerdo de París, ¿cuál es el límite de aumento de temperatura?', opciones:['+1,5°C','+3°C','+5°C','No hay límite'], correcta:0, exp:'El Acuerdo de París busca limitar el aumento a un máximo de 1,5°C.'},
+                  {pregunta:'¿El efecto invernadero es siempre negativo?', opciones:['Sí, siempre es dañino','No, es natural y necesario para la vida','Solo existe en Marte','No existe'], correcta:1, exp:'El efecto invernadero natural es necesario para mantener la temperatura del planeta; el problema es su aumento.'},
                 ]
               },
             ]
@@ -793,6 +883,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'China hoy:\n→ PIB: 2° mundial (PPP: 1°)\n→ Exportaciones: 1° del mundo\n→ "Cinturón y Ruta": 150 países\n→ Yuan: alternativa al dólar\n→ Ejército: 2° del mundo',
                 ejercicios:[
                   {pregunta:'¿Qué puesto ocupa China en economías mundiales?', opciones:['1°','2°','3°','4°'], correcta:1, exp:'China es la 2ª economía por PIB nominal. En paridad de poder adquisitivo ya es la 1ª.'},
+                  {pregunta:'¿Qué es la iniciativa "Cinturón y Ruta" de China?', opciones:['Un programa espacial','Un proyecto de infraestructura y comercio global','Una alianza militar','Un tratado ambiental'], correcta:1, exp:'"Cinturón y Ruta" es un megaproyecto chino de infraestructura y comercio que conecta más de 150 países.'},
+                  {pregunta:'¿Qué puesto ocupa China en exportaciones mundiales?', opciones:['1°','2°','3°','5°'], correcta:0, exp:'China es el primer exportador mundial de bienes.'},
+                  {pregunta:'¿Qué moneda se presenta como alternativa al dólar en el comercio internacional?', opciones:['El euro','El yuan','La libra','El yen'], correcta:1, exp:'El yuan chino se posiciona cada vez más como alternativa al dólar en transacciones internacionales.'},
                 ]
               },
             ]
@@ -873,6 +966,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'"Have you ever ___ Paris?" (visit)', opciones:['visited','visit','visiting','visits'], correcta:0, exp:'Present Perfect: have + past participle → visited.'},
                   {pregunta:'"I ___ just ___ my homework." (finish)', opciones:['have/finished','has/finished','did/finish','was/finishing'], correcta:0, exp:'"Just" → Present Perfect: have just finished.'},
+                  {pregunta:'"She ___ never ___ Japan." (be)', opciones:['has/been','have/been','has/being','have/be'], correcta:0, exp:'She = 3ª persona → has been. "Been" es el participio de "be".'},
+                  {pregunta:'Which word is a common Present Perfect signal word?', opciones:['Yesterday','Already','Tomorrow','Next week'], correcta:1, exp:'"Already" es una palabra señal típica del Present Perfect.'},
                 ]
               },
             ]
@@ -891,6 +986,8 @@ export const CONTENIDO_EDUCATIVO = {
                 ejercicios:[
                   {pregunta:'"If you heat ice, it ___ melt." (Zero)', opciones:['will melt','melts','melted','would melt'], correcta:1, exp:'Zero Conditional: if + present → present.'},
                   {pregunta:'"If I study, I ___ pass." (First)', opciones:['would','will','can','might'], correcta:1, exp:'First: if + present → will + verb.'},
+                  {pregunta:'"If water reaches 100°C, it ___." (boil, Zero)', opciones:['boils','will boil','boiled','would boil'], correcta:0, exp:'Zero Conditional: if + present → present. "Boils".'},
+                  {pregunta:'"If it rains tomorrow, we ___ the picnic." (First)', opciones:['cancel','cancels','will cancel','canceled'], correcta:2, exp:'First Conditional: if + present → will + verb.'},
                 ]
               },
               { id:2, titulo:'Second Conditional', bloqueado:true,
@@ -898,6 +995,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'SECOND: "If I won the lottery, I would travel."\n(hipotético)\n\n"If I were you..." (consejo — always "were")',
                 ejercicios:[
                   {pregunta:'"If I ___ rich, I would buy a house."', opciones:['am','was','were','would be'], correcta:2, exp:'Second Conditional: if + past → were.'},
+                  {pregunta:'"If I had more time, I ___ travel more." (would)', opciones:['will','would','can','have'], correcta:1, exp:'Second Conditional: if + past, would + verb.'},
+                  {pregunta:'Second Conditional describes situations that are:', opciones:['Real and current','Hypothetical or unlikely','Always true','Past facts'], correcta:1, exp:'El Second Conditional describe situaciones hipotéticas o poco probables.'},
+                  {pregunta:'"If I ___ you, I would study more."', opciones:['am','was','were','be'], correcta:2, exp:'En Second Conditional, con "if I", siempre se usa "were".'},
                 ]
               },
             ]
@@ -915,6 +1015,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'ACTIVE: The chef cooked the meal.\nPASSIVE: The meal was cooked.\n\nPresent: is/are + pp\nPast: was/were + pp\nFuture: will be + pp',
                 ejercicios:[
                   {pregunta:'"The book ___ by Borges." (write)', opciones:['wrote','was written','is writing','written'], correcta:1, exp:'Pasiva en pasado: was + written.'},
+                  {pregunta:'"The letter ___ tomorrow." (send, future passive)', opciones:['will send','will be sent','is sending','sent'], correcta:1, exp:'Pasiva futura: will be + past participle → will be sent.'},
+                  {pregunta:'"The windows ___ every week." (clean, present passive)', opciones:['clean','are cleaned','is cleaned','cleaned'], correcta:1, exp:'Pasiva presente plural: are + past participle → are cleaned.'},
+                  {pregunta:'What does the passive voice emphasize?', opciones:['The person who does the action','The object or receiver of the action','The time of the action','Nothing in particular'], correcta:1, exp:'La voz pasiva pone el foco en el objeto/receptor de la acción, no en quién la hace.'},
                 ]
               },
             ]
@@ -932,6 +1035,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'INTRO: Hook → Background → Thesis\n\nBODY: Topic sentence → Evidence → Analysis\n\nCONCLUSION: Restate thesis → Summary → Final thought',
                 ejercicios:[
                   {pregunta:'What is a thesis statement?', opciones:['First sentence','Central argument of the essay','List of evidence','The conclusion'], correcta:1, exp:'The thesis presents the central argument the essay will defend.'},
+                  {pregunta:'What comes first in an essay introduction?', opciones:['The conclusion','A hook to grab attention','The bibliography','The thesis restated'], correcta:1, exp:'El "hook" es la frase inicial que capta la atención del lector.'},
+                  {pregunta:'What should a body paragraph include?', opciones:['Only opinions','Topic sentence, evidence and analysis','Just a list of facts','Nothing structured'], correcta:1, exp:'Cada párrafo del cuerpo debe tener oración temática, evidencia y análisis.'},
+                  {pregunta:'What is the purpose of the conclusion?', opciones:['Introduce new arguments','Restate the thesis and summarize','Ask questions','List sources'], correcta:1, exp:'La conclusión retoma la tesis y resume los argumentos principales.'},
                 ]
               },
             ]
@@ -949,6 +1055,9 @@ export const CONTENIDO_EDUCATIVO = {
                 formula:'STAR:\nS - Situation: contexto\nT - Task: tu responsabilidad\nA - Action: qué hiciste\nR - Result: resultado\n\nCommon: "Tell me about yourself"\n"What are your strengths?"',
                 ejercicios:[
                   {pregunta:'What does "STAR" stand for?', opciones:['Simple, Task, Action, Result','Situation, Task, Action, Result','Strategy, Task, Analysis, Result','Situation, Theory, Action, Review'], correcta:1, exp:'STAR: Situation, Task, Action, Result.'},
+                  {pregunta:'In the STAR technique, what does "R" stand for?', opciones:['Reason','Result','Review','Request'], correcta:1, exp:'R = Result: el resultado de la acción que tomaste.'},
+                  {pregunta:'What is a common interview question the STAR technique helps answer?', opciones:['What is your favorite color?','Tell me about a time you solved a problem','Where do you live?','What time is it?'], correcta:1, exp:'STAR es ideal para responder preguntas de comportamiento como "contame de una vez que resolviste un problema".'},
+                  {pregunta:'In STAR, what does "T" (Task) refer to?', opciones:['The final result','Your specific responsibility in that situation','The company you worked for','The salary'], correcta:1, exp:'Task se refiere a tu responsabilidad específica en esa situación.'},
                 ]
               },
             ]

@@ -151,11 +151,11 @@ con Ismael antes de borrarlo, pero no tocarlo mientras tanto.
   `Progreso.js` se sacó porque no hay datos reales de actividad día a día para
   llenarlo (solo un contador de racha) — se reemplazó por una tarjeta simple
   con la racha real.
-- **Contenido balanceado en año 1** (149 ejercicios totales, antes 96): las 6
-  materias tienen mínimo 4 ejercicios por tema en año 1 (matemática arranca con
-  7 en su primer tema). **Años 2-6 siguen desbalanceados** (1-2 ejercicios por
-  tema) — año 1 es el que usan los alumnos nuevos por defecto (`registrar()`
-  setea `anio_escolar:1`), así que era la prioridad.
+- **Contenido balanceado en todos los años** (258 ejercicios totales, antes 96):
+  las 6 materias tienen mínimo 4 ejercicios por tema en los 6 años de secundaria
+  (los temas más ricos como matemática año1/año3 "Fórmula resolvente" quedaron
+  con 7, sin tocar). Verificado con script: opciones válidas (4 por ejercicio),
+  `correcta` en rango, cero preguntas duplicadas.
 - **Sin routing real**: navegación 100% por `useState` (`pantalla`, `navActivo`),
   sin URLs compartibles ni botón "atrás".
 - **Los botones "🧪 Ir directo a..." de `App.js` NO son login real**: solo
@@ -224,8 +224,8 @@ git add . && git commit -m "..." && git push
 - [ ] Tracking de actividad día a día (hoy solo hay un contador de racha
       agregado, no hay calendario real — se sacó el que estaba porque era
       inventado, ver §8)
-- [x] Balancear ejercicios de año 1 (6 materias, mínimo 4 por tema — 149 totales)
-- [ ] Balancear ejercicios de años 2-6 (siguen en 1-2 por tema, sin tocar)
+- [x] Balancear ejercicios de todos los años (6 materias × 6 años, mínimo 4 por
+      tema — 258 totales, ver §8)
 
 ### Fase 2 — Personalización
 - [ ] Modalidades: Completo / Apoyo Escolar / Por Horas (agregar en inscripción)
