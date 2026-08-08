@@ -116,18 +116,43 @@ src/
 ├── PreciosConfig.js          # Lógica de precios y descuentos
 ├── MateriaDetalle.js         # Modal con info de materias (carreras, curiosidad)
 ├── Materias.js               # Vista de estudio: contenido + ejercicios
-├── ContenidoEducativo.js     # Currículum: 6 materias × 6 años, 96 ejercicios
+├── ContenidoEducativo.js     # Currículum: 6 materias × 6 años, 258 ejercicios
 ├── TutorIA.js                # Chat con tutor IA por materia
 ├── Progreso.js               # Estadísticas reales (XP, nivel, racha, logros)
 ├── Logros.js                 # Logros reales, derivados de gamificacion.js
 ├── gamificacion.js           # XP/nivel/logros — toda la lógica de cálculo, sin UI
+├── gamificacion.test.js      # Tests unitarios de gamificacion.js (52 casos)
+├── PreciosConfig.test.js     # Tests unitarios de PreciosConfig.js
+├── App.test.js               # Smoke test de App.js con Firebase mockeado
 ├── PanelTutor.js             # Panel del responsable/tutor familiar
 ├── firebase.js                # Config Firebase (apiKey pública, no es secreto)
 └── Diagnostico_backup.js     # CÓDIGO MUERTO — nadie lo importa, candidato a borrar
 api/
 └── tutor.js                  # Vercel serverless function — proxy a Anthropic
 firestore.rules                # Reglas de Firestore — pegar a mano en la consola
+graphify-out/                  # Grafo de conocimiento del código (gitignored, local)
 ```
+
+### Tests
+
+`npm test` corre Jest + Testing Library (ya vienen con create-react-app, no se
+agregó ninguna dependencia nueva). Cobertura actual:
+- `gamificacion.test.js`: XP, nivel, títulos, % por materia, promedio general,
+  ejercicios completados, y los 7 logros — incluye casos límite (cruce exacto
+  de nivel, materia sin contenido, clave de tema inexistente).
+- `PreciosConfig.test.js`: precio base compuesto por año, descuentos por
+  volumen de optativas, fallback de precio para materias premium desconocidas.
+- `App.test.js`: smoke test con `firebase/auth` y `firebase/firestore`
+  mockeados — verifica que sin sesión activa se muestra el login (antes este
+  archivo era el test default de CRA, roto desde que se reescribió App.js).
+
+**Regla nueva**: cualquier función pura que se agregue a `gamificacion.js` o
+`PreciosConfig.js` (o similar) debe llevar tests — son baratos de escribir y
+es exactamente el tipo de código (aritmética, umbrales) donde un bug sutil no
+se nota a simple vista ni testeando a mano en el navegador. `Diagnostico.js` y
+`Materias.js` (los componentes grandes con más historial de bugs reales)
+todavía no tienen tests — requieren mockear Firebase de forma más completa;
+queda pendiente, no se hizo en esta pasada por proporción de esfuerzo.
 
 `Diagnostico_backup.js` (845 líneas) no está importado en ningún lado. Confirmar
 con Ismael antes de borrarlo, pero no tocarlo mientras tanto.
@@ -165,6 +190,13 @@ con Ismael antes de borrarlo, pero no tocarlo mientras tanto.
   login real (registro o `signInWithEmailAndPassword`).
 - **Vercel/CI**: `CI=true` en Vercel convierte warnings de ESLint en errores de
   build — **correr `npm run build` local antes de cada push** (ver §10).
+- **🟡 Riesgo estructural — `Diagnostico.js` es un god-component**: 1116 líneas,
+  14 pasos, y en el grafo de `graphify` (ver §10) es el nodo de mayor grado de
+  todo el proyecto (empatado con el concepto "Tutor IA"), en la comunidad de
+  menor cohesión del código (0.11). Ya causó al menos un bug real (el de
+  `onComplete`/`setUsuario`, ver §11). Cualquier feature de Fase 2 que toque
+  la inscripción (Modalidades, por ejemplo) va a seguir engordando este
+  archivo — considerar partirlo antes de agregarle más pasos, no después.
 
 ## 9. Reglas de desarrollo
 
@@ -180,15 +212,25 @@ con Ismael antes de borrarlo, pero no tocarlo mientras tanto.
 8. No mutar objetos importados de módulos (ej. `ContenidoEducativo.js`) desde
    componentes — usar `useState`/Firestore, nunca `objeto.propiedad = x` directo
    sobre datos importados
+9. Toda función pura nueva en `gamificacion.js`/`PreciosConfig.js` lleva tests
+   (`npm test`) — ver §7 "Tests"
+10. No dejar parámetros de función sin usar (ej. el `OPTATIVAS`/`PREMIUM` que
+    tenía `calcularResumen` y nunca leía — limpiado 2026-08-08). Un parámetro
+    que aparenta ser necesario y no lo es engaña al próximo que lea el código.
 
 ## 10. Comandos frecuentes
 
 ```bash
 cd "C:\Users\ibarr\OneDrive\Desktop\iacademia"
 npm start                 # desarrollo local
+npm test                   # correr los tests (Jest + Testing Library)
 npm run build              # SIEMPRE antes de push — replica el build de Vercel
 git add . && git commit -m "..." && git push
 ```
+
+Hay un grafo de conocimiento del código generado con `graphify` en
+`graphify-out/` (gitignored, local — no se sube). Se regenera con
+`/graphify --update` si hace falta después de cambios grandes.
 
 ## 11. Errores conocidos
 
@@ -226,6 +268,16 @@ git add . && git commit -m "..." && git push
       inventado, ver §8)
 - [x] Balancear ejercicios de todos los años (6 materias × 6 años, mínimo 4 por
       tema — 258 totales, ver §8)
+- [x] Tests automatizados para la lógica pura (`gamificacion.js`,
+      `PreciosConfig.js`) + smoke test de `App.js` — 52 tests, ver §7 "Tests"
+- [x] Limpieza: parámetros muertos en `calcularResumen` (`OPTATIVAS`/`PREMIUM`
+      nunca se usaban)
+- [ ] Partir `Diagnostico.js` en componentes más chicos — sigue siendo
+      god-component (ver §9), sin tests, y Fase 2 le va a agregar más pasos
+      (Modalidades). Mejor antes que después.
+- [ ] Tests de integración para `Diagnostico.js`/`Materias.js` — los
+      componentes grandes con más historial de bugs reales siguen sin
+      cobertura (requiere mockear Firebase más a fondo)
 
 ### Fase 2 — Personalización
 - [ ] Modalidades: Completo / Apoyo Escolar / Por Horas (agregar en inscripción)

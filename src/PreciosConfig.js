@@ -32,7 +32,7 @@ export const calcularDescuentoOptativas = (cantidad) => {
   return 0;
 }
 
-export const calcularResumen = (anio, optativasSel, premiumSel, OPTATIVAS, PREMIUM) => {
+export const calcularResumen = (anio, optativasSel, premiumSel) => {
   const precioBase = calcularPrecioBase(anio);
   const descPct = calcularDescuentoOptativas(optativasSel.length);
   const precioOptBruto = optativasSel.length * PRECIOS.OPTATIVA_MENSUAL;

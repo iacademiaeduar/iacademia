@@ -262,9 +262,7 @@ const volver = () => setTimeout(() => setPaso(p=>p-1), 10);
   const materiasBase = (alumno.anio_inscripcion||alumno.anio_escolar)&&alumno.nivel
     ? (MATERIAS_BASE[alumno.nivel]?.[alumno.anio_inscripcion||alumno.anio_escolar]||[])
     : [];
-  const resumen = calcularResumen(
-    alumno.anio_escolar||1, optativasSel, premiumSel, OPTATIVAS, PREMIUM_LIST
-  );
+  const resumen = calcularResumen(alumno.anio_escolar||1, optativasSel, premiumSel);
 
     if(pantalla==='inicio') return wrap(card(
     <>
