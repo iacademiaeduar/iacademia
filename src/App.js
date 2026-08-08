@@ -11,6 +11,16 @@ import PanelTutor from './PanelTutor';
 import { calcularXP, calcularNivel, tituloNivel, calcularPromedioGeneral, contarEjerciciosCompletados, calcularPctMateria } from './gamificacion';
 import { CONTENIDO_EDUCATIVO } from './ContenidoEducativo';
 
+// Adaptaciones que tienen un efecto visual real aplicado (ver index.css). El resto
+// de usuario.adaptaciones (audio texto, sesiones cortas, más pausas, gamificación
+// extra, explicaciones simples, más ejemplos) se muestran como detectadas pero
+// todavía no cambian nada en la app — no mentir sobre lo que está implementado.
+const ADAPTACIONES_CON_EFECTO = {
+  'fuente grande': 'adapt-fuente-grande',
+  'alto contraste': 'adapt-alto-contraste',
+  'espaciado extra': 'adapt-espaciado',
+};
+
 const MATERIAS = Object.entries(CONTENIDO_EDUCATIVO).map(([id, m]) => ({
   id, nombre: m.nombre, emoji: m.emoji, color: m.color, text: m.text, bar: m.bar,
 }));
@@ -60,6 +70,14 @@ export default function App() {
     setUsuario(prev => ({ ...prev, ...cambios }));
     updateDoc(doc(db, 'usuarios', usuario.uid), cambios).catch(e => console.error('Error actualizando racha:', e));
   }, [usuario, pantalla]);
+
+  useEffect(() => {
+    const activas = usuario?.adaptaciones || [];
+    const html = document.documentElement;
+    Object.entries(ADAPTACIONES_CON_EFECTO).forEach(([nombre, clase]) => {
+      html.classList.toggle(clase, activas.includes(nombre));
+    });
+  }, [usuario?.adaptaciones]);
 
   const registrar = async () => {
     try {
@@ -218,6 +236,22 @@ export default function App() {
                   </div>
                   <div className="text-xs text-purple-200 mt-1 text-right">{pctNivel}%</div>
                 </div>
+                {usuario?.adaptaciones?.length > 0 && (
+                  <div className="bg-white border border-gray-100 rounded-xl p-4 mt-5">
+                    <div className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Adaptaciones activas</div>
+                    <div className="flex flex-wrap gap-2">
+                      {usuario.adaptaciones.map((a, i) => {
+                        const aplicada = !!ADAPTACIONES_CON_EFECTO[a];
+                        return (
+                          <span key={i} className={`text-xs px-2.5 py-1 rounded-full font-medium ${aplicada ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
+                            {aplicada ? '✓' : '🛠️'} {a}
+                          </span>
+                        );
+                      })}
+                    </div>
+                    <div className="text-xs text-gray-400 mt-2">✓ aplicada ahora · 🛠️ detectada, en desarrollo</div>
+                  </div>
+                )}
               </div>
             )}
             {navActivo === 'tutor' && <TutorIA usuario={usuario} />}

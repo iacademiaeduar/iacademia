@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Adaptaciones de accesibilidad — activadas según usuario.adaptaciones (ver Diagnostico.js calcAdaptaciones).
+   Tailwind define sus tamaños de texto en rem, así que escalar el font-size del <html> escala todo el sitio
+   sin tener que tocar cada className text-xs/text-sm individualmente. */
+html.adapt-fuente-grande {
+  font-size: 19px;
+}
+
+html.adapt-alto-contraste {
+  filter: contrast(1.35) saturate(1.1);
+}
+
+html.adapt-espaciado {
+  letter-spacing: 0.02em;
+}
+html.adapt-espaciado body {
+  line-height: 1.7;
+}

@@ -159,6 +159,19 @@ con Ismael antes de borrarlo, pero no tocarlo mientras tanto.
 
 ## 8. Estado real conocido (relevar antes de asumir que algo funciona)
 
+- **Adaptaciones de accesibilidad**: `Diagnostico.js` calcula `usuario.adaptaciones`
+  (array de strings: `fuente grande`, `audio texto`, `espaciado extra` si
+  dislexia; `sesiones cortas`, `más pausas`, `gamificación extra` si TDAH;
+  `alto contraste` si daltonismo; `explicaciones simples`, `más ejemplos` si
+  comprensión baja). `App.js` aplica clases CSS en `<html>` (`index.css`,
+  `ADAPTACIONES_CON_EFECTO`) para las 3 que tienen efecto real:
+  `fuente grande` (escala el `font-size` del `<html>`, y como Tailwind usa
+  rem todos los `text-*` del sitio escalan solos), `alto contraste` (CSS
+  `filter: contrast()`), `espaciado extra` (`letter-spacing`/`line-height`).
+  Las otras 5 (`audio texto`, `sesiones cortas`, `más pausas`, `gamificación
+  extra`, `explicaciones simples`, `más ejemplos`) se muestran en el panel
+  "Adaptaciones activas" del dashboard marcadas 🛠️ (detectadas, sin efecto
+  real todavía) — **no fingir que están implementadas** si se toca este código.
 - **Progreso real por materia**: `Materias.js` guarda en
   `usuarios/{uid}.progreso.{materiaId} = { completados: string[], desbloqueados: string[] }`
   (claves `"unidadId-temaId"`) vía `updateDoc`. Se deriva el `bloqueado`/`completo`/`pct`
@@ -281,7 +294,9 @@ Hay un grafo de conocimiento del código generado con `graphify` en
 
 ### Fase 2 — Personalización
 - [ ] Modalidades: Completo / Apoyo Escolar / Por Horas (agregar en inscripción)
-- [ ] Adaptaciones activas para dislexia/TDAH/daltonismo visibles en el dashboard
+      — **toca `Diagnostico.js`: partirlo primero (ver §9)**
+- [x] Adaptaciones activas para dislexia/TDAH/daltonismo visibles en el
+      dashboard — ver §8 "Adaptaciones de accesibilidad"
 - [ ] Selector de materias adicionales desde el dashboard (post-inscripción)
 - [ ] Contenido para primaria (1°-7° grado) — hoy solo existe el modelo de datos
 
