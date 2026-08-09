@@ -761,7 +761,6 @@ export default function MateriaDetalle({ materia, tipo, onClose, onAgregar, sele
   const info = tipo === 'premium'
     ? INFO_PREMIUM[materia?.id]
     : INFO_MATERIAS[materia?.nombre || materia];
-console.log('PREMIUM CHECK:', tipo, materia?.id, !!INFO_PREMIUM[materia?.id]);
   if (!info) return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
       onClick={onClose}>

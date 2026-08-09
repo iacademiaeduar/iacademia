@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from './firebase';
 import { getContenidoMateria, CONTENIDO_EDUCATIVO } from './ContenidoEducativo';
+import { PRECIOS, calcularResumenApoyoEscolar } from './PreciosConfig';
 
 const claveTema = (unidadId, temaId) => `${unidadId}-${temaId}`;
+const fmtPrecio = (n) => new Intl.NumberFormat('es-AR').format(n);
 
 // Apoyo Escolar: el alumno solo ve las materias puntuales que eligió al
 // inscribirse, no las 6 por defecto (Plan Completo sí ve todas).
@@ -14,9 +16,16 @@ const materiasDisponiblesPara = (usuario) => {
   return Object.keys(CONTENIDO_EDUCATIVO);
 };
 
-export default function Materias({ usuario, onProgresoActualizado }) {
+export default function Materias({ usuario, onProgresoActualizado, onMateriasActualizadas }) {
   const materiasDisponibles = materiasDisponiblesPara(usuario);
   const [materiaActiva, setMateriaActiva] = useState(() => materiasDisponibles[0] || 'matematica');
+  const esApoyoEscolar = usuario?.modalidad === 'apoyo_escolar';
+  const materiasNoElegidas = esApoyoEscolar
+    ? Object.keys(CONTENIDO_EDUCATIVO).filter(id => !materiasDisponibles.includes(id))
+    : [];
+  const [mostrarAgregar, setMostrarAgregar] = useState(false);
+  const [seleccionAgregar, setSeleccionAgregar] = useState([]);
+  const [guardandoAgregar, setGuardandoAgregar] = useState(false);
   const anio = usuario?.anio_inscripcion || usuario?.anio_escolar || 3;
   const contenidoActivo = getContenidoMateria(materiaActiva, anio);
   const [unidadAbierta, setUnidadAbierta] = useState(1);
@@ -124,6 +133,34 @@ export default function Materias({ usuario, onProgresoActualizado }) {
     }
   };
 
+  const toggleSeleccionAgregar = (id) => {
+    setSeleccionAgregar(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
+  };
+
+  const cerrarModalAgregar = () => {
+    setMostrarAgregar(false);
+    setSeleccionAgregar([]);
+  };
+
+  const confirmarAgregarMaterias = async () => {
+    if (seleccionAgregar.length === 0 || guardandoAgregar) return;
+    const nuevaLista = [...(usuario?.materias_apoyo_escolar || []), ...seleccionAgregar];
+    setGuardandoAgregar(true);
+    // Igual que persistirProgreso: el estado local se actualiza primero, sin
+    // esperar Firestore — si el guardado remoto falla, la UI no se queda
+    // desactualizada (ver bug de onComplete/setUsuario en CLAUDE.md §11).
+    onMateriasActualizadas?.(nuevaLista);
+    cerrarModalAgregar();
+    if (usuario?.uid) {
+      try {
+        await updateDoc(doc(db, 'usuarios', usuario.uid), { materias_apoyo_escolar: nuevaLista });
+      } catch (e) {
+        console.error('Error agregando materias:', e);
+      }
+    }
+    setGuardandoAgregar(false);
+  };
+
   return (
     <div className="flex gap-4 h-full">
       <div className="w-44 flex-shrink-0 flex flex-col gap-1.5">
@@ -137,6 +174,13 @@ export default function Materias({ usuario, onProgresoActualizado }) {
           </button>
           );
         })}
+        {esApoyoEscolar && materiasNoElegidas.length > 0 && (
+          <button onClick={() => setMostrarAgregar(true)}
+            className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-left text-xs font-medium border-2 border-dashed border-purple-200 text-purple-500 hover:bg-purple-50 transition-colors">
+            <span className="text-base">+</span>
+            <span className="leading-tight">Agregar materia</span>
+          </button>
+        )}
       </div>
 
       <div className="flex-1 flex flex-col min-w-0 gap-3">
@@ -279,6 +323,49 @@ export default function Materias({ usuario, onProgresoActualizado }) {
           </div>
         )}
       </div>
+
+      {mostrarAgregar && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4"
+          onClick={e => e.target === e.currentTarget && cerrarModalAgregar()}>
+          <div className="bg-white rounded-2xl w-full max-w-md flex flex-col overflow-hidden shadow-2xl">
+            <div className="bg-purple-50 p-5 relative flex-shrink-0">
+              <button onClick={cerrarModalAgregar}
+                className="absolute top-4 right-4 w-8 h-8 bg-white bg-opacity-70 rounded-full flex items-center justify-center text-gray-600 hover:bg-opacity-100 transition-all text-lg font-bold">
+                ×
+              </button>
+              <div className="text-xs font-bold uppercase tracking-wider text-purple-600 mb-1">Apoyo Escolar</div>
+              <h2 className="text-lg font-bold text-purple-700">Agregar materia</h2>
+              <p className="text-xs text-purple-600 opacity-80 mt-1">${fmtPrecio(PRECIOS.APOYO_ESCOLAR_MENSUAL)}/mes por materia</p>
+            </div>
+            <div className="p-5 flex flex-col gap-2 max-h-80 overflow-y-auto">
+              {materiasNoElegidas.map(id => {
+                const m = CONTENIDO_EDUCATIVO[id];
+                const sel = seleccionAgregar.includes(id);
+                return (
+                  <button key={id} onClick={() => toggleSeleccionAgregar(id)}
+                    className={`flex items-center gap-3 border rounded-xl px-3 py-2.5 text-left transition-all ${sel ? 'border-purple-400 bg-purple-50' : 'border-gray-200 hover:border-purple-200'}`}>
+                    <span className="text-lg">{m.emoji}</span>
+                    <span className={`flex-1 text-sm font-medium ${sel ? 'text-purple-700' : 'text-gray-700'}`}>{m.nombre}</span>
+                    {sel && <span className="text-purple-500 text-sm font-bold">✓</span>}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="p-5 border-t border-gray-100 flex-shrink-0">
+              {seleccionAgregar.length > 0 && (
+                <div className="flex justify-between items-center mb-3 text-sm">
+                  <span className="text-gray-500">{seleccionAgregar.length} materia{seleccionAgregar.length === 1 ? '' : 's'} nueva{seleccionAgregar.length === 1 ? '' : 's'}</span>
+                  <span className="font-bold text-purple-700">+${fmtPrecio(calcularResumenApoyoEscolar(seleccionAgregar).total)}/mes</span>
+                </div>
+              )}
+              <button onClick={confirmarAgregarMaterias} disabled={seleccionAgregar.length === 0 || guardandoAgregar}
+                className="w-full bg-purple-600 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-purple-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                {guardandoAgregar ? 'Agregando…' : 'Confirmar'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

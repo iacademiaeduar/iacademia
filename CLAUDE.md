@@ -4,7 +4,7 @@ Plataforma educativa online con tutores IA, mercado inicial Argentina/hispanohab
 Reemplaza o complementa la escuela tradicional (primaria y secundaria) con currículum
 adaptativo y un tutor de IA por materia disponible 24/7.
 
-**Última actualización:** 2026-08-07 · **Estado:** ~60% del alcance actual implementado
+**Última actualización:** 2026-08-08 · **Estado:** ~60% del alcance actual implementado
 
 ---
 
@@ -246,6 +246,19 @@ con Ismael antes de borrarlo, pero no tocarlo mientras tanto.
   y corrigió recién (el offset mágico de "Editar selección", ver arriba).
   Si el archivo vuelve a crecer mucho al sumar contenido real a "Por Horas"
   o al iterar Modalidades, ahí sí conviene la partición completa.
+- **Agregar materias post-inscripción (solo Apoyo Escolar)**: `Materias.js`
+  tiene un botón "+ Agregar materia" en el sidebar (visible solo si
+  `usuario.modalidad==='apoyo_escolar'` y quedan materias de las 6 sin
+  elegir). Abre un modal, calcula el impacto de precio con
+  `calcularResumenApoyoEscolar` (informativo, no hay cobro real todavía) y al
+  confirmar hace `updateDoc` de `usuario.materias_apoyo_escolar` + sube el
+  cambio a `App.js` vía el nuevo callback `onMateriasActualizadas` — mismo
+  patrón que `onProgresoActualizado`, estado local primero y Firestore
+  después (ver bug de `onComplete` en §11, por poco se repite acá). **Plan
+  Completo NO tiene selector de optativas/premium post-inscripción todavía**
+  — quedó fuera de esta pasada a propósito: reutilizar `OPTATIVAS`/
+  `PREMIUM_LIST` de `diagnosticoData.js` con la elegibilidad por año y el
+  descuento por volumen es una feature más grande, ver §12.
 
 ## 9. Reglas de desarrollo
 
@@ -336,7 +349,10 @@ Hay un grafo de conocimiento del código generado con `graphify` en
       armando"), no hay sistema de reserva ni facturación por hora.
 - [x] Adaptaciones activas para dislexia/TDAH/daltonismo visibles en el
       dashboard — ver §8 "Adaptaciones de accesibilidad"
-- [ ] Selector de materias adicionales desde el dashboard (post-inscripción)
+- [x] Selector de materias adicionales desde el dashboard — **solo Apoyo
+      Escolar** (ver §8). Falta el equivalente para Plan Completo: agregar
+      optativas/premium post-inscripción reutilizando la lógica de
+      elegibilidad por año y descuento por volumen de `diagnosticoData.js`.
 - [ ] Contenido para primaria (1°-7° grado) — hoy solo existe el modelo de datos
 
 ### Fase 3 — Certificación y Ministerio

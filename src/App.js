@@ -265,9 +265,13 @@ export default function App() {
               </div>
             )}
             {navActivo === 'tutor' && <TutorIA usuario={usuario} />}
-            {navActivo === 'materias' && <Materias usuario={usuario} onProgresoActualizado={(materiaId, prog) => {
-              setUsuario(prev => ({ ...prev, progreso: { ...prev?.progreso, [materiaId]: prog } }));
-            }} />}
+            {navActivo === 'materias' && <Materias usuario={usuario}
+              onProgresoActualizado={(materiaId, prog) => {
+                setUsuario(prev => ({ ...prev, progreso: { ...prev?.progreso, [materiaId]: prog } }));
+              }}
+              onMateriasActualizadas={(nuevaLista) => {
+                setUsuario(prev => ({ ...prev, materias_apoyo_escolar: nuevaLista }));
+              }} />}
             {navActivo === 'progreso' && <Progreso usuario={usuario} />}
             {navActivo === 'logros' && <Logros usuario={usuario} />}
             {navActivo === 'tutor_panel' && <PanelTutor usuario={usuario} />}
