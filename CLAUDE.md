@@ -112,8 +112,12 @@ OFERTA ANUAL: -15% sobre el total
 ```
 src/
 ├── App.js                    # Router (useState, sin react-router) + Login + Dashboard
-├── Diagnostico.js            # Flujo de inscripción de 14 pasos
-├── PreciosConfig.js          # Lógica de precios y descuentos
+├── Diagnostico.js            # Flujo de inscripción — ~14-17 pasos según modalidad
+├── diagnosticoData.js        # Datos estáticos del flujo (provincias, materias, precios,
+│                              # pool de lógica, PASOS) — extraído de Diagnostico.js
+├── diagnosticoUI.js          # Átomos de UI del flujo (Barra, Btn, Inp, Sel, Check, wrap, card)
+│                              # — extraído de Diagnostico.js
+├── PreciosConfig.js          # Lógica de precios: Plan Completo y Apoyo Escolar
 ├── MateriaDetalle.js         # Modal con info de materias (carreras, curiosidad)
 ├── Materias.js               # Vista de estudio: contenido + ejercicios
 ├── ContenidoEducativo.js     # Currículum: 6 materias × 6 años, 258 ejercicios
@@ -122,7 +126,7 @@ src/
 ├── Logros.js                 # Logros reales, derivados de gamificacion.js
 ├── gamificacion.js           # XP/nivel/logros — toda la lógica de cálculo, sin UI
 ├── gamificacion.test.js      # Tests unitarios de gamificacion.js (52 casos)
-├── PreciosConfig.test.js     # Tests unitarios de PreciosConfig.js
+├── PreciosConfig.test.js     # Tests unitarios de PreciosConfig.js (Completo + Apoyo Escolar)
 ├── App.test.js               # Smoke test de App.js con Firebase mockeado
 ├── PanelTutor.js             # Panel del responsable/tutor familiar
 ├── firebase.js                # Config Firebase (apiKey pública, no es secreto)
@@ -159,6 +163,33 @@ con Ismael antes de borrarlo, pero no tocarlo mientras tanto.
 
 ## 8. Estado real conocido (relevar antes de asumir que algo funciona)
 
+- **Modalidades de inscripción** (`Diagnostico.js`, paso "modalidad" — nuevo,
+  entre `aviso_legal` y `datos_alumno`):
+  - **Plan Completo** (`alumno.modalidad='completo'`): el flujo de siempre —
+    materias base obligatorias + optativas + premium, precio por año con
+    +13% compuesto.
+  - **Apoyo Escolar** (`alumno.modalidad='apoyo_escolar'`): el alumno elige
+    materias puntuales (solo las 6 con contenido real de `ContenidoEducativo.js`,
+    no toda la lista de `MATERIAS_BASE`), sin base/optativas/premium, a
+    `PRECIOS.APOYO_ESCOLAR_MENSUAL` ($2900) por materia
+    (`calcularResumenApoyoEscolar` en `PreciosConfig.js`). Se guarda en
+    `usuario.materias_apoyo_escolar` (array de ids, no nombres). `Materias.js`
+    y el grid "Mis materias" de `App.js` (Inicio) filtran por esta lista en
+    vez de mostrar las 6 por defecto — **si se toca cualquiera de esos dos
+    lugares, hay que mantener el filtro en los dos, no alcanza con uno solo**
+    (bug real encontrado y corregido en esta misma pasada: el grid de Inicio
+    seguía mostrando las 6 aunque el sidebar de Materias.js ya filtraba bien).
+  - **Por Horas** (`alumno.modalidad='por_horas'`): placeholder honesto —
+    pantalla "¡Ya casi!" que dice que todavía se está armando, no hay sistema
+    de reserva ni de facturación por hora. No fingir que existe.
+  - `pantalla==='materias'` y `pantalla==='checkout'` tienen ramas separadas
+    por modalidad (`&& alumno.modalidad==='apoyo_escolar'` matchea primero).
+    Al agregar una modalidad nueva o tocar precios, revisar ambas pantallas.
+  - De paso se corrigió un bug preexistente: el botón "Editar selección" del
+    checkout hacía `setPaso(p => p - 2)`, un offset mágico que en realidad
+    apuntaba a `datos_tutor`, no a `materias`. Se cambió a
+    `setPaso(PASOS.indexOf('materias'))` — inmune a que se inserten o saquen
+    pasos en el medio.
 - **Adaptaciones de accesibilidad**: `Diagnostico.js` calcula `usuario.adaptaciones`
   (array de strings: `fuente grande`, `audio texto`, `espaciado extra` si
   dislexia; `sesiones cortas`, `más pausas`, `gamificación extra` si TDAH;
@@ -203,13 +234,18 @@ con Ismael antes de borrarlo, pero no tocarlo mientras tanto.
   login real (registro o `signInWithEmailAndPassword`).
 - **Vercel/CI**: `CI=true` en Vercel convierte warnings de ESLint en errores de
   build — **correr `npm run build` local antes de cada push** (ver §10).
-- **🟡 Riesgo estructural — `Diagnostico.js` es un god-component**: 1116 líneas,
-  14 pasos, y en el grafo de `graphify` (ver §10) es el nodo de mayor grado de
-  todo el proyecto (empatado con el concepto "Tutor IA"), en la comunidad de
-  menor cohesión del código (0.11). Ya causó al menos un bug real (el de
-  `onComplete`/`setUsuario`, ver §11). Cualquier feature de Fase 2 que toque
-  la inscripción (Modalidades, por ejemplo) va a seguir engordando este
-  archivo — considerar partirlo antes de agregarle más pasos, no después.
+- **🟡 Riesgo estructural — `Diagnostico.js` sigue siendo un god-component,
+  parcialmente mitigado**: se extrajeron los datos estáticos
+  (`diagnosticoData.js`) y los átomos de UI (`diagnosticoUI.js`), pero los
+  ~17 pasos (`if(pantalla===...)`) y todo el estado (`alumno`, `tutor`,
+  `diag`, `optativasSel`, `premiumSel`, `apoyoEscolarSel`, etc.) siguen en un
+  solo componente. Partir los pasos en componentes separados requeriría
+  Context o pasar ~20 props a cada uno — no se hizo en esta pasada por
+  proporción de esfuerzo. Ya causó al menos un bug real (el de
+  `onComplete`/`setUsuario`, ver §11) y otro bug preexistente que se encontró
+  y corrigió recién (el offset mágico de "Editar selección", ver arriba).
+  Si el archivo vuelve a crecer mucho al sumar contenido real a "Por Horas"
+  o al iterar Modalidades, ahí sí conviene la partición completa.
 
 ## 9. Reglas de desarrollo
 
@@ -285,16 +321,19 @@ Hay un grafo de conocimiento del código generado con `graphify` en
       `PreciosConfig.js`) + smoke test de `App.js` — 52 tests, ver §7 "Tests"
 - [x] Limpieza: parámetros muertos en `calcularResumen` (`OPTATIVAS`/`PREMIUM`
       nunca se usaban)
-- [ ] Partir `Diagnostico.js` en componentes más chicos — sigue siendo
-      god-component (ver §9), sin tests, y Fase 2 le va a agregar más pasos
-      (Modalidades). Mejor antes que después.
+- [x] Extraer datos estáticos y átomos de UI de `Diagnostico.js` a
+      `diagnosticoData.js`/`diagnosticoUI.js` (mitigación parcial del
+      god-component, ver §9 — falta partir los ~17 pasos en sí)
 - [ ] Tests de integración para `Diagnostico.js`/`Materias.js` — los
       componentes grandes con más historial de bugs reales siguen sin
       cobertura (requiere mockear Firebase más a fondo)
 
 ### Fase 2 — Personalización
-- [ ] Modalidades: Completo / Apoyo Escolar / Por Horas (agregar en inscripción)
-      — **toca `Diagnostico.js`: partirlo primero (ver §9)**
+- [x] Modalidades: **Plan Completo** y **Apoyo Escolar** funcionando de punta
+      a punta (paso "modalidad" en `Diagnostico.js`, pricing en
+      `PreciosConfig.js`, filtrado por materia en `Materias.js` y `App.js` —
+      ver §8). **Por Horas** es un placeholder honesto ("todavía la estamos
+      armando"), no hay sistema de reserva ni facturación por hora.
 - [x] Adaptaciones activas para dislexia/TDAH/daltonismo visibles en el
       dashboard — ver §8 "Adaptaciones de accesibilidad"
 - [ ] Selector de materias adicionales desde el dashboard (post-inscripción)

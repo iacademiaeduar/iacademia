@@ -1,4 +1,4 @@
-import { PRECIOS, calcularPrecioBase, calcularDescuentoOptativas, calcularResumen } from './PreciosConfig';
+import { PRECIOS, calcularPrecioBase, calcularDescuentoOptativas, calcularResumen, calcularResumenApoyoEscolar } from './PreciosConfig';
 
 describe('calcularPrecioBase', () => {
   test('año 1 es el precio base sin incremento', () => {
@@ -71,5 +71,24 @@ describe('calcularResumen', () => {
     const descPct = calcularDescuentoOptativas(6);
     const precioOptDesc = Math.round(6 * PRECIOS.OPTATIVA_MENSUAL * (1 - descPct));
     expect(r.total).toBe(precioBase + precioOptDesc + PRECIOS.PREMIUM.derecho);
+  });
+});
+
+describe('calcularResumenApoyoEscolar', () => {
+  test('sin materias seleccionadas, el total es 0', () => {
+    const r = calcularResumenApoyoEscolar([]);
+    expect(r.cantidad).toBe(0);
+    expect(r.total).toBe(0);
+  });
+
+  test('el total es cantidad × precio por materia, sin descuentos ni base', () => {
+    const r = calcularResumenApoyoEscolar(['matematica', 'lengua', 'ingles']);
+    expect(r.cantidad).toBe(3);
+    expect(r.total).toBe(3 * PRECIOS.APOYO_ESCOLAR_MENSUAL);
+  });
+
+  test('totalAnualConDesc es 15% menos que totalAnual, redondeado', () => {
+    const r = calcularResumenApoyoEscolar(['matematica', 'lengua']);
+    expect(r.totalAnualConDesc).toBe(Math.round(r.totalAnual * 0.85));
   });
 });

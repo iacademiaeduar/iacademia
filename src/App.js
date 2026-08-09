@@ -187,7 +187,7 @@ export default function App() {
               <div>
                 <div className="grid grid-cols-3 gap-3 mb-5">
                   {[
-  {n: usuario?.materias_base?.length || usuario?.materias_activas?.length || 6, l:'Materias activas'},
+  {n: usuario?.materias_apoyo_escolar?.length || usuario?.materias_base?.length || usuario?.materias_activas?.length || 6, l:'Materias activas'},
   {n: promedio+'%', l:'Progreso promedio'},
   {n: ejerciciosCompletados, l:'Ejercicios completados'}
 ].map((s,i) => (
@@ -199,7 +199,17 @@ export default function App() {
                 </div>
                 <div className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Mis materias</div>
                 <div className="grid grid-cols-3 gap-3 mb-5">
-                  {(usuario?.materias_base?.length > 0
+                  {(usuario?.materias_apoyo_escolar?.length > 0
+  ? usuario.materias_apoyo_escolar.map((id) => ({
+      id, nombre: CONTENIDO_EDUCATIVO[id]?.nombre || id,
+      emoji: CONTENIDO_EDUCATIVO[id]?.emoji || '📚',
+      color: CONTENIDO_EDUCATIVO[id]?.color || 'bg-gray-100',
+      text: CONTENIDO_EDUCATIVO[id]?.text || 'text-gray-500',
+      bar: CONTENIDO_EDUCATIVO[id]?.bar || 'bg-gray-400',
+      pct: calcularPctMateria(id, anio, usuario?.progreso),
+      unidad: CONTENIDO_EDUCATIVO[id]?.años[anio]?.titulo || 'Sin contenido aún',
+    }))
+  : usuario?.materias_base?.length > 0
   ? usuario.materias_base.map((nombre) => {
       const id = ID_POR_NOMBRE[nombre];
       if (!id) return { id: nombre, nombre, emoji: '📚', color: 'bg-gray-100', text: 'text-gray-500', bar: 'bg-gray-400', pct: 0, unidad: 'Sin contenido aún' };

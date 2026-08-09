@@ -5,8 +5,18 @@ import { getContenidoMateria, CONTENIDO_EDUCATIVO } from './ContenidoEducativo';
 
 const claveTema = (unidadId, temaId) => `${unidadId}-${temaId}`;
 
+// Apoyo Escolar: el alumno solo ve las materias puntuales que eligió al
+// inscribirse, no las 6 por defecto (Plan Completo sí ve todas).
+const materiasDisponiblesPara = (usuario) => {
+  if (usuario?.modalidad === 'apoyo_escolar' && usuario?.materias_apoyo_escolar?.length) {
+    return usuario.materias_apoyo_escolar.filter(id => CONTENIDO_EDUCATIVO[id]);
+  }
+  return Object.keys(CONTENIDO_EDUCATIVO);
+};
+
 export default function Materias({ usuario, onProgresoActualizado }) {
-  const [materiaActiva, setMateriaActiva] = useState('matematica');
+  const materiasDisponibles = materiasDisponiblesPara(usuario);
+  const [materiaActiva, setMateriaActiva] = useState(() => materiasDisponibles[0] || 'matematica');
   const anio = usuario?.anio_inscripcion || usuario?.anio_escolar || 3;
   const contenidoActivo = getContenidoMateria(materiaActiva, anio);
   const [unidadAbierta, setUnidadAbierta] = useState(1);
@@ -117,13 +127,16 @@ export default function Materias({ usuario, onProgresoActualizado }) {
   return (
     <div className="flex gap-4 h-full">
       <div className="w-44 flex-shrink-0 flex flex-col gap-1.5">
-        {Object.entries(CONTENIDO_EDUCATIVO).map(([id, m]) => (
+        {materiasDisponibles.map((id) => {
+          const m = CONTENIDO_EDUCATIVO[id];
+          return (
           <button key={id} onClick={() => cambiarMateria(id)}
             className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-left text-xs font-medium transition-colors ${materiaActiva === id ? `${m.color} ${m.text}` : 'bg-white border border-gray-100 text-gray-500 hover:border-gray-200'}`}>
             <span className="text-base">{m.emoji}</span>
             <span className="leading-tight">{m.nombre}</span>
           </button>
-        ))}
+          );
+        })}
       </div>
 
       <div className="flex-1 flex flex-col min-w-0 gap-3">

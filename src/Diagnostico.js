@@ -1,167 +1,17 @@
 import React, { useState, useCallback } from 'react';
 import MateriaDetalle from './MateriaDetalle';
-import { calcularPrecioBase, calcularResumen, PRECIOS } from './PreciosConfig';
+import { calcularPrecioBase, calcularResumen, calcularResumenApoyoEscolar, PRECIOS } from './PreciosConfig';
+import { CONTENIDO_EDUCATIVO } from './ContenidoEducativo';
+import {
+  PROVINCIAS, MATERIAS_BASE, OPTATIVAS, PREMIUM_LIST,
+  COLORES_TEST, LOGICA_POOL, PASOS, shuffle, fmt,
+} from './diagnosticoData';
+import { Barra, Btn, Inp, Sel, Check, wrap, card } from './diagnosticoUI';
 
-// ── DATOS ────────────────────────────────────────────────────────────────────
-const PROVINCIAS = ['Buenos Aires','CABA','Catamarca','Chaco','Chubut','Córdoba','Corrientes',
-  'Entre Ríos','Formosa','Jujuy','La Pampa','La Rioja','Mendoza','Misiones','Neuquén',
-  'Río Negro','Salta','San Juan','San Luis','Santa Cruz','Santa Fe',
-  'Santiago del Estero','Tierra del Fuego','Tucumán'];
-
-const MATERIAS_BASE = {
-  primaria: {
-    1:['Lengua y Literatura','Matemática','Ciencias Naturales','Ciencias Sociales','Educación Física','Arte','Tecnología','Educación Emocional'],
-    2:['Lengua y Literatura','Matemática','Ciencias Naturales','Ciencias Sociales','Educación Física','Arte','Tecnología','Educación Emocional'],
-    3:['Lengua y Literatura','Matemática','Ciencias Naturales','Ciencias Sociales','Educación Física','Arte','Tecnología','Educación Emocional','Inglés'],
-    4:['Lengua y Literatura','Matemática','Ciencias Naturales','Ciencias Sociales','Educación Física','Arte','Tecnología','Educación Emocional','Inglés'],
-    5:['Lengua y Literatura','Matemática','Ciencias Naturales','Ciencias Sociales','Educación Física','Arte','Tecnología','Educación Emocional','Inglés','Ciudadanía y Convivencia'],
-    6:['Lengua y Literatura','Matemática','Ciencias Naturales','Ciencias Sociales','Educación Física','Arte','Tecnología','Educación Emocional','Inglés','Ciudadanía y Convivencia'],
-    7:['Lengua y Literatura','Matemática','Ciencias Naturales','Ciencias Sociales','Educación Física','Arte','Tecnología','Educación Emocional','Inglés','Ciudadanía y Convivencia','Primeros Auxilios'],
-  },
-  secundaria: {
-    1:['Matemática','Lengua y Literatura','Biología','Historia','Geografía','Inglés','Educación Física','Arte','Tecnología','Educación Emocional'],
-    2:['Matemática','Lengua y Literatura','Biología','Historia','Geografía','Inglés','Educación Física','Arte','Tecnología','Educación Emocional','Ciudadanía y Derecho'],
-    3:['Matemática Avanzada','Lengua y Literatura','Física','Química','Historia Contemporánea','Geografía Global','Inglés','Educación Emocional','Tecnología y Sociedad','Ciudadanía y Derecho'],
-    4:['Matemática Avanzada','Lengua y Literatura','Física','Química','Biología Molecular','Historia Global','Geografía Geopolítica','Inglés','Educación Emocional','Filosofía'],
-    5:['Matemática Avanzada','Lengua y Literatura','Ciencias Naturales Integradas','Ciencias Sociales','Inglés','Filosofía Política y Ética','Tecnología y Cultura Digital','Derecho y Ciudadanía Global'],
-    6:['Lengua, Comunicación y Cultura Global','Matemática Avanzada','Ciencias Naturales Aplicadas','Ciudadanía, Derecho y Ética','Economía del Mundo Actual','Proyecto Final Integrador'],
-  }
-};
-
-const OPTATIVAS = [
-  {id:'robotica',nombre:'Robótica',emoji:'🤖',cat:'Tecnología',yr:1},
-  {id:'programacion',nombre:'Programación',emoji:'⌨️',cat:'Tecnología',yr:1},
-  {id:'ajedrez',nombre:'Ajedrez y Pensamiento Estratégico',emoji:'♟️',cat:'Estrategia',yr:1},
-  {id:'musica',nombre:'Música y Producción Sonora',emoji:'🎵',cat:'Arte',yr:1},
-  {id:'teatro',nombre:'Teatro y Expresión',emoji:'🎭',cat:'Arte',yr:1},
-  {id:'cine',nombre:'Cine y Análisis Audiovisual',emoji:'🎬',cat:'Arte',yr:2},
-  {id:'arte_digital',nombre:'Arte Digital y Animación',emoji:'🎨',cat:'Arte',yr:2},
-  {id:'escritura',nombre:'Escritura Creativa',emoji:'✍️',cat:'Humanidades',yr:1},
-  {id:'filosofia',nombre:'Filosofía del Futuro',emoji:'🤔',cat:'Humanidades',yr:3},
-  {id:'psicologia',nombre:'Psicología Aplicada',emoji:'🧠',cat:'Humanidades',yr:3},
-  {id:'astronomia',nombre:'Astronomía',emoji:'🔭',cat:'Ciencia',yr:2},
-  {id:'neurociencia',nombre:'Neurociencia para la Vida',emoji:'🧬',cat:'Ciencia',yr:4},
-  {id:'ecologia',nombre:'Ecología y Cambio Climático',emoji:'🌱',cat:'Ciencia',yr:1},
-  {id:'finanzas',nombre:'Educación Financiera',emoji:'💰',cat:'Economía',yr:2},
-  {id:'emprendimiento',nombre:'Emprendimiento Juvenil',emoji:'🚀',cat:'Economía',yr:3},
-  {id:'videojuegos',nombre:'Diseño de Videojuegos',emoji:'🎮',cat:'Tecnología',yr:3},
-  {id:'ciencia_datos',nombre:'Ciencia de Datos',emoji:'📊',cat:'Tecnología',yr:4},
-  {id:'movimiento',nombre:'Movimiento Consciente y Salud',emoji:'🧘',cat:'Bienestar',yr:1},
-  {id:'frances',nombre:'Francés',emoji:'🇫🇷',cat:'Idiomas',yr:1},
-  {id:'portugues',nombre:'Portugués',emoji:'🇧🇷',cat:'Idiomas',yr:1},
-  {id:'aleman',nombre:'Alemán',emoji:'🇩🇪',cat:'Idiomas',yr:2},
-  {id:'japones',nombre:'Japonés',emoji:'🇯🇵',cat:'Idiomas',yr:2},
-  {id:'mandarin',nombre:'Chino Mandarín',emoji:'🇨🇳',cat:'Idiomas',yr:2},
-];
-
-const PREMIUM_LIST = [
-  {id:'ia_datos',nombre:'IA, Ciencia de Datos y Decisiones Estratégicas',emoji:'🤖'},
-  {id:'derecho',nombre:'Introducción al Derecho y Pensamiento Jurídico',emoji:'⚖️'},
-  {id:'contabilidad',nombre:'Contabilidad, Economía y Finanzas Personales',emoji:'📈'},
-  {id:'psicologia_avanzada',nombre:'Psicología Aplicada al Comportamiento Humano',emoji:'🧠'},
-  {id:'medicina',nombre:'Ciencias Médicas, Ética y Salud Pública',emoji:'🩺'},
-  {id:'ingenieria',nombre:'Ingeniería, Robótica y Resolución de Problemas',emoji:'⚙️'},
-  {id:'comunicacion',nombre:'Comunicación Estratégica y Marca Personal',emoji:'📣'},
-  {id:'arquitectura',nombre:'Arquitectura, Diseño Industrial y Espacios del Futuro',emoji:'🏛️'},
-  {id:'biotecnologia',nombre:'Biotecnología, Genética y Medicina Personalizada',emoji:'🔬'},
-  {id:'fisica_moderna',nombre:'Física Moderna, Cuántica y Astrofísica Aplicada',emoji:'⚛️'},
-];
-
-const COLORES_TEST = [
-  {fondo:'#E8F5E9',circulo:'#2E7D32',preg:'¿Qué color ves en el círculo?',ops:['Verde','Rojo','Gris','No distingo'],ok:0},
-  {fondo:'#FFEBEE',circulo:'#C62828',preg:'¿Qué color predomina en el fondo?',ops:['Verde','Rojo','Azul','No distingo'],ok:1},
-  {fondo:'#E3F2FD',circulo:'#1565C0',preg:'¿Qué color ves en el círculo?',ops:['Azul','Verde','Gris','No distingo'],ok:0},
-];
-
-const LOGICA_POOL = [
-  {p:'¿Cuál número sigue? 2, 4, 6, 8, ___',ops:['9','10','11','12'],ok:1},
-  {p:'3 cajas con 4 pelotas cada una. ¿Total?',ops:['7','12','9','16'],ok:1},
-  {p:'¿Cuál NO pertenece? Perro, Gato, Mesa, Pájaro',ops:['Perro','Gato','Mesa','Pájaro'],ok:2},
-  {p:'Hoy es martes. ¿Qué día será en 3 días?',ops:['Jueves','Viernes','Miércoles','Sábado'],ok:1},
-  {p:'Ana > Juan > Pedro en dinero. ¿Quién tiene menos?',ops:['Ana','Juan','Pedro','Todos igual'],ok:2},
-  {p:'△ ○ △ ○ △ ___ ¿Qué sigue?',ops:['△','○','□','◇'],ok:1},
-  {p:'Libro $500. Pago $1000. ¿Vuelto?',ops:['$400','$500','$600','$1500'],ok:1},
-  {p:'¿Cuál es el mayor? 0.5 · 1/2 · 0.49 · 0.51',ops:['0.5','1/2','0.49','0.51'],ok:3},
-];
-
-const PASOS = [
-  'inicio','aviso_legal','datos_alumno','datos_tutor',
-  'materias','checkout',
-  'pago',
-  'aviso_diagnostico','estilo','lectura','atencion','colores','logica','comprension',
-  'bienvenida'
-];
-
-const shuffle = arr => [...arr].sort(()=>Math.random()-0.5);
-const fmt = n => new Intl.NumberFormat('es-AR').format(n);
-
-// ── UI ATOMS ─────────────────────────────────────────────────────────────────
-const Barra = ({paso}) => (
-  <div className="w-full bg-gray-100 rounded-full h-1.5 mb-5">
-    <div className="bg-purple-500 h-1.5 rounded-full transition-all duration-500"
-      style={{width:Math.round((paso/(PASOS.length-1))*100)+'%'}}/>
-  </div>
-);
-
-const Btn = ({onClick,children,outline,disabled,small}) => (
-  <button onClick={onClick} disabled={disabled}
-    className={`w-full rounded-xl font-semibold transition-all text-sm ${small?'py-2':'py-3'} ${
-      disabled?'bg-gray-200 text-gray-400 cursor-not-allowed'
-      :outline?'border-2 border-purple-400 text-purple-700 hover:bg-purple-50'
-      :'bg-purple-600 text-white hover:bg-purple-700 shadow-md'}`}>
-    {children}
-  </button>
-);
-
-const Inp = ({label,placeholder,value,onChange,type='text',required}) => (
-  <div>
-    {label && <label className="text-xs font-semibold text-gray-500 mb-1 block">
-      {label}{required&&<span className="text-red-400 ml-0.5">*</span>}
-    </label>}
-    <input type={type} placeholder={placeholder} value={value} onChange={onChange}
-      className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-purple-400 bg-white transition-colors"/>
-  </div>
-);
-
-const Sel = ({label,value,onChange,children,required}) => (
-  <div>
-    {label&&<label className="text-xs font-semibold text-gray-500 mb-1 block">
-      {label}{required&&<span className="text-red-400 ml-0.5">*</span>}
-    </label>}
-    <select value={value} onChange={onChange}
-      className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-purple-400 bg-white">
-      {children}
-    </select>
-  </div>
-);
-
-const Check = ({label,checked,onClick,sub}) => (
-  <button onClick={onClick}
-    className={`flex items-start gap-3 p-3 border rounded-xl text-left w-full transition-all
-      ${checked?'border-purple-400 bg-purple-50':'border-gray-200 hover:border-gray-300'}`}>
-    <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5
-      ${checked?'border-purple-500 bg-purple-500':'border-gray-300'}`}>
-      {checked&&<span className="text-white text-xs font-bold">✓</span>}
-    </div>
-    <div>
-      <div className={`text-sm ${checked?'text-purple-700 font-medium':'text-gray-600'}`}>{label}</div>
-      {sub&&<div className="text-xs text-gray-400 mt-0.5">{sub}</div>}
-    </div>
-  </button>
-);
-
-const wrap = (children, extra) => (
-  <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center p-4 relative">
-    {children}
-    {extra}
-  </div>
-);
-
-const card = (children,wide) => (
-  <div className={`bg-white rounded-2xl border border-gray-100 p-7 w-full ${wide?'max-w-3xl':'max-w-lg'} shadow-xl`}>
-    {children}
-  </div>
-);
+// Materias que un alumno de "Apoyo Escolar" puede elegir — solo las que tienen
+// tutor IA con contenido real (las 6 de ContenidoEducativo.js), no toda la lista
+// de materias_base de la escuela tradicional.
+const MATERIAS_APOYO = Object.entries(CONTENIDO_EDUCATIVO).map(([id, m]) => ({ id, nombre: m.nombre, emoji: m.emoji }));
 
 // ── COMPONENTE PRINCIPAL ──────────────────────────────────────────────────────
 export default function Diagnostico({onComplete}) {
@@ -180,12 +30,15 @@ export default function Diagnostico({onComplete}) {
   const [premiumSel, setPremiumSel] = useState([]);
   const [materiaDetalle, setMateriaDetalle] = useState(null);
   const [tipoDetalle, setTipoDetalle] = useState(null);
+  const [apoyoEscolarSel, setApoyoEscolarSel] = useState([]);
+  const [mostrarGraciasPorHoras, setMostrarGraciasPorHoras] = useState(false);
 
   const [alumno, setAlumno] = useState({
     nombre:'',fecha_nacimiento:'',localidad:'',provincia:'',
     escuela:'',escuela_tipo:'actual',
     nivel:'secundaria',anio_escolar:null,anio_inscripcion:null,
     situacion_academica:'en_curso',materias_adeuda:'',
+    modalidad:null, // 'completo' | 'apoyo_escolar' | 'por_horas'
   });
 
   const [tutor, setTutor] = useState({
@@ -242,6 +95,9 @@ const volver = () => setTimeout(() => setPaso(p=>p-1), 10);
   const togglePrem = useCallback(id => {
     setPremiumSel(p=>p.includes(id)?p.filter(x=>x!==id):[...p,id]);
   },[]);
+  const toggleApoyoEscolar = useCallback(id => {
+    setApoyoEscolarSel(p=>p.includes(id)?p.filter(x=>x!==id):[...p,id]);
+  },[]);
 
   const calcAdaptaciones = () => {
     const a=[];
@@ -262,7 +118,21 @@ const volver = () => setTimeout(() => setPaso(p=>p-1), 10);
   const materiasBase = (alumno.anio_inscripcion||alumno.anio_escolar)&&alumno.nivel
     ? (MATERIAS_BASE[alumno.nivel]?.[alumno.anio_inscripcion||alumno.anio_escolar]||[])
     : [];
-  const resumen = calcularResumen(alumno.anio_escolar||1, optativasSel, premiumSel);
+  const resumen = alumno.modalidad === 'apoyo_escolar'
+    ? calcularResumenApoyoEscolar(apoyoEscolarSel)
+    : calcularResumen(alumno.anio_escolar||1, optativasSel, premiumSel);
+
+  if (mostrarGraciasPorHoras) return wrap(card(
+    <>
+      <div className="text-5xl text-center mb-4">⏱️</div>
+      <h2 className="text-xl font-bold text-gray-800 mb-2 text-center">¡Ya casi!</h2>
+      <p className="text-sm text-gray-500 text-center mb-6">
+        La modalidad <strong>Por Horas</strong> (consultas puntuales y preparación de exámenes)
+        todavía la estamos armando. Mientras tanto podés inscribirte con Plan Completo o Apoyo Escolar.
+      </p>
+      <Btn outline onClick={()=>setMostrarGraciasPorHoras(false)}>← Elegir otra modalidad</Btn>
+    </>
+  ));
 
     if(pantalla==='inicio') return wrap(card(
     <>
@@ -330,6 +200,42 @@ const volver = () => setTimeout(() => setPaso(p=>p-1), 10);
       <div className="flex gap-3">
         <Btn outline onClick={volver}>← Volver</Btn>
         <Btn onClick={av}>Entendido, continuar →</Btn>
+      </div>
+    </>
+  ));
+
+  // MODALIDAD
+  if(pantalla==='modalidad') return wrap(card(
+    <>
+      <Barra paso={paso}/>
+      <div className="text-3xl mb-3">🎯</div>
+      <h2 className="text-xl font-bold text-gray-800 mb-2">¿Qué buscás con iAcademia?</h2>
+      <p className="text-sm text-gray-500 mb-5">Elegí la modalidad que mejor se adapta a tu situación.</p>
+      <div className="flex flex-col gap-3 mb-2">
+        {[
+          {id:'completo',emoji:'🎓',titulo:'Plan Completo',desc:'Reemplaza la escuela. Currículum completo del año, todas las materias obligatorias, tutor IA en cada una.'},
+          {id:'apoyo_escolar',emoji:'📚',titulo:'Apoyo Escolar',desc:'Complementa tu escuela actual. Elegís puntualmente las materias en las que necesitás ayuda — la IA detecta dónde te trabás.'},
+          {id:'por_horas',emoji:'⏱️',titulo:'Por Horas',desc:'Consultas puntuales y preparación de exámenes. Todavía estamos armando esta modalidad.'},
+        ].map(m=>(
+          <button key={m.id} onClick={()=>setAlumno(p=>({...p,modalidad:m.id}))}
+            className={`flex items-start gap-3 p-4 border-2 rounded-xl text-left transition-all
+              ${alumno.modalidad===m.id?'border-purple-500 bg-purple-50 shadow-md':'border-gray-100 hover:border-gray-200'}`}>
+            <span className="text-2xl">{m.emoji}</span>
+            <div className="flex-1">
+              <div className="font-semibold text-gray-800 text-sm">{m.titulo}</div>
+              <div className="text-xs text-gray-400 mt-0.5">{m.desc}</div>
+            </div>
+            {alumno.modalidad===m.id&&<span className="text-purple-500 text-lg font-bold">✓</span>}
+          </button>
+        ))}
+      </div>
+      <div className="flex gap-3 mt-3">
+        <Btn outline onClick={volver}>← Volver</Btn>
+        <Btn onClick={()=>{
+          if(!alumno.modalidad){alert('Elegí una modalidad para continuar');return;}
+          if(alumno.modalidad==='por_horas'){setMostrarGraciasPorHoras(true);return;}
+          av();
+        }}>Continuar →</Btn>
       </div>
     </>
   ));
@@ -508,7 +414,43 @@ const volver = () => setTimeout(() => setPaso(p=>p-1), 10);
     </>
   ));
 
-  // MATERIAS
+  // MATERIAS — Apoyo Escolar: elección simple de materias puntuales, sin base/optativas/premium.
+  if(pantalla==='materias' && alumno.modalidad==='apoyo_escolar') return wrap(card(
+    <>
+      <Barra paso={paso}/>
+      <div className="text-3xl mb-2">📚</div>
+      <h2 className="text-xl font-bold text-gray-800 mb-1">¿En qué materias necesitás apoyo?</h2>
+      <p className="text-xs text-gray-400 mb-5">Elegí una o más. Podés sumar o sacar materias después desde el panel.</p>
+      <div className="grid grid-cols-3 gap-2 mb-5">
+        {MATERIAS_APOYO.map(m=>{
+          const sel=apoyoEscolarSel.includes(m.id);
+          return (
+            <button key={m.id} onClick={()=>toggleApoyoEscolar(m.id)}
+              className={`flex items-center gap-2 border rounded-xl px-3 py-2.5 text-left transition-all
+                ${sel?'border-purple-400 bg-purple-50':'border-gray-200 hover:border-purple-200'}`}>
+              <span className="text-lg">{m.emoji}</span>
+              <span className={`text-xs font-medium flex-1 ${sel?'text-purple-700':'text-gray-600'}`}>{m.nombre}</span>
+              {sel&&<span className="text-purple-500 text-xs">✓</span>}
+            </button>
+          );
+        })}
+      </div>
+      <div className="bg-purple-50 border border-purple-100 rounded-xl p-3 mb-5 flex items-center justify-between">
+        <div className="text-xs text-gray-600">
+          <span className="font-semibold text-gray-800">{resumen.cantidad}</span> materia{resumen.cantidad===1?'':'s'} — ${fmt(PRECIOS.APOYO_ESCOLAR_MENSUAL)}/mes c/u
+        </div>
+        <div className="text-right">
+          <div className="text-lg font-bold text-purple-700">${fmt(resumen.total)}<span className="text-xs font-normal text-gray-400">/mes</span></div>
+        </div>
+      </div>
+      <div className="flex gap-3">
+        <Btn outline onClick={volver}>← Volver</Btn>
+        <Btn onClick={()=>{if(apoyoEscolarSel.length===0){alert('Elegí al menos una materia');return;}av();}}>Ver resumen y pagar →</Btn>
+      </div>
+    </>
+  ));
+
+  // MATERIAS — Plan Completo
   if(pantalla==='materias') return wrap(
     <div className="bg-white rounded-2xl border border-gray-100 p-7 w-full max-w-3xl shadow-xl">
       <Barra paso={paso}/>
@@ -659,7 +601,46 @@ const volver = () => setTimeout(() => setPaso(p=>p-1), 10);
     </div>
   );
 
-  // CHECKOUT
+  // CHECKOUT — Apoyo Escolar
+  if(pantalla==='checkout' && alumno.modalidad==='apoyo_escolar') return wrap(card(
+    <>
+      <Barra paso={paso}/>
+      <div className="flex items-center gap-3 mb-4">
+        <div className="text-3xl">🧾</div>
+        <div>
+          <h2 className="text-xl font-bold text-gray-800">Resumen de tu plan de Apoyo Escolar</h2>
+          <p className="text-xs text-gray-400">Revisá los detalles antes de continuar al pago</p>
+        </div>
+      </div>
+      <div className="mb-4">
+        {apoyoEscolarSel.map(id=>{
+          const m=MATERIAS_APOYO.find(x=>x.id===id);
+          return m?(
+            <div key={id} className="flex justify-between items-center py-1.5 border-b border-gray-50">
+              <div className="flex items-center gap-2"><span>{m.emoji}</span><span className="text-xs text-gray-700">{m.nombre}</span></div>
+              <span className="text-xs text-gray-500">${fmt(PRECIOS.APOYO_ESCOLAR_MENSUAL)}</span>
+            </div>
+          ):null;
+        })}
+      </div>
+      <div className="bg-purple-50 border border-purple-200 rounded-xl p-4 mb-4">
+        <div className="flex justify-between items-center mb-1">
+          <span className="font-bold text-gray-800">Total mensual</span>
+          <span className="text-2xl font-bold text-purple-700">${fmt(resumen.total)}</span>
+        </div>
+        <div className="flex justify-between items-center text-xs text-gray-500">
+          <span>Proyección anual</span>
+          <span>${fmt(resumen.totalAnual)}</span>
+        </div>
+      </div>
+      <div className="flex gap-3">
+        <Btn outline onClick={()=>setPaso(PASOS.indexOf('materias'))}>✏️ Editar materias</Btn>
+        <Btn onClick={av}>Continuar al pago →</Btn>
+      </div>
+    </>
+  ));
+
+  // CHECKOUT — Plan Completo
   if(pantalla==='checkout') return wrap(card(
     <>
       <Barra paso={paso}/>
@@ -760,7 +741,7 @@ const volver = () => setTimeout(() => setPaso(p=>p-1), 10);
       </div>
 
       <div className="flex gap-3">
-        <Btn outline onClick={()=>{ setPaso(p => p - 2); }}>✏️ Editar selección</Btn>
+        <Btn outline onClick={()=>setPaso(PASOS.indexOf('materias'))}>✏️ Editar selección</Btn>
         <Btn onClick={av}>Continuar al pago →</Btn>
       </div>
     </>
@@ -1047,12 +1028,14 @@ const volver = () => setTimeout(() => setPaso(p=>p-1), 10);
   if(pantalla==='bienvenida'){
     const adaptaciones=calcAdaptaciones();
     const nivelLogica=diag.puntaje_logica>=3?'Alto':diag.puntaje_logica>=2?'Medio':'Básico';
+    const esApoyoEscolar = alumno.modalidad === 'apoyo_escolar';
     const datosFinales={
       ...alumno,tutor,...diag,adaptaciones,
       quien_completo:quienCompleta,
-      materias_base:materiasBase,
-      materias_optativas:optativasSel,
-      materias_premium:premiumSel,
+      materias_base: esApoyoEscolar ? [] : materiasBase,
+      materias_optativas: esApoyoEscolar ? [] : optativasSel,
+      materias_premium: esApoyoEscolar ? [] : premiumSel,
+      materias_apoyo_escolar: esApoyoEscolar ? apoyoEscolarSel : [],
       metodo_pago:metodoPago,
       plan_mensual:resumen.total,
       diagnostico_completo:true,

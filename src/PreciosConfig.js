@@ -19,7 +19,8 @@ export const PRECIOS = {
     4: 0.10,
     6: 0.15,
     8: 0.20,
-  }
+  },
+  APOYO_ESCOLAR_MENSUAL: 2900, // por materia — modalidad "Apoyo Escolar" (no reemplaza la escuela)
 };
 
 export const calcularPrecioBase = (anio) => {
@@ -42,6 +43,18 @@ export const calcularResumen = (anio, optativasSel, premiumSel) => {
   return {
     precioBase, descPct, precioOptBruto, precioOptDesc,
     precioPremium, total, totalAnual: total * 12,
+    totalAnualConDesc: Math.round(total * 12 * 0.85),
+  };
+};
+
+// Modalidad Apoyo Escolar: se paga por materia elegida, sin base obligatoria
+// ni optativas/premium (esas son extras de "reemplazar la escuela", no aplican acá).
+export const calcularResumenApoyoEscolar = (materiasSel) => {
+  const cantidad = materiasSel.length;
+  const total = cantidad * PRECIOS.APOYO_ESCOLAR_MENSUAL;
+  return {
+    cantidad, precioPorMateria: PRECIOS.APOYO_ESCOLAR_MENSUAL, total,
+    totalAnual: total * 12,
     totalAnualConDesc: Math.round(total * 12 * 0.85),
   };
 };
